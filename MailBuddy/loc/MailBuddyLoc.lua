@@ -1,4 +1,4 @@
--- Version 2.92
+MailBuddy = MailBuddy or {}
 
 --[[ Umlauts & special characters list
 	ä --> \195\164
@@ -20,7 +20,7 @@
    ã : \195\163    õ : \195\181  				   \195\177 : \195\177
 ]]
 
-mb_loc = {
+MailBuddy.mb_loc = {
 	--English
     [1] = {
 		-- Options menu
@@ -517,7 +517,10 @@ mb_loc = {
         ["SI_BINDING_NAME_MAILBUDDY_GUILD_MEMBER_COPY"]	 = "Member -> MailBuddy",
     },
 }
---Meta table trick to use english localization for german and french values, which are missing
+
+local mb_loc = MailBuddy.mb_loc
+
+--Meta table trick to use English localization for German, French and other missing language values
 setmetatable(mb_loc[2], {__index = mb_loc[1]})
 setmetatable(mb_loc[3], {__index = mb_loc[1]})
 setmetatable(mb_loc[4], {__index = mb_loc[1]})
