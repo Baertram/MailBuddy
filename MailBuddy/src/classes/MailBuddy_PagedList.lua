@@ -32,20 +32,22 @@ function MailBuddyPagedList:Initialize(control, dataType)
     self.searchType = SEARCH_TYPE_BY_NAME
 
     self.dataTypes = {}
-    self.dataList = {}
+    self.masterList = {}
 
     self.pages = {}
     self.currPageNum = 1
     self.numPages = 0
     self.rememberSpot = false
 
+
     local headerContainer = control:GetNamedChild("Headers")
     if(headerContainer) then
+        self.headerContainer = headerContainer
         local showArrows = false
         self.sortHeaderGroup = ZO_SortHeaderGroup:New(headerContainer, showArrows)
         --self.sortHeaderGroup:SetColors(ZO_SELECTED_TEXT, ZO_NORMAL_TEXT, ZO_SELECTED_TEXT, ZO_DISABLED_TEXT)
         self.sortHeaderGroup:RegisterCallback(ZO_SortHeaderGroup.HEADER_CLICKED, function(key, order) self:OnSortHeaderClicked(key, order) end)
-        --self.sortHeaderGroup:AddHeadersFromContainer() --loads the header columns from the control in the order of the <controls> of the XML virtual template. hidden="true" will NOT be added!
+        self.sortHeaderGroup:AddHeadersFromContainer() --loads the header columns from the control in the order of the <controls> of the XML virtual template. hidden="true" will NOT be added!
     end
 
     local footerControl = control:GetNamedChild("Footer")
@@ -150,7 +152,7 @@ function MailBuddyPagedList:RefreshVisible()
     local lastIndex = (page.startIndex + page.count - 1)
     local previousControl
     for i = page.startIndex, lastIndex do
-        local data = self.dataList[i]
+        local data = self.masterList[i]
         local control = data.control
         local selected = self:IsSelected(data.data)
         self.dataTypes[control.templateName].setupCallback(control, data.data, selected)
@@ -219,7 +221,7 @@ function MailBuddyPagedList:SortList()
 
     -- The default implemenation will sort according to the sort keys specified in the SetupSort function
     if self.sortKeys then
-        table.sort(self.dataList, function(listEntry1, listEntry2) return self:CompareSortEntries(listEntry1, listEntry2) end)
+        table.sort(self.masterList, function(listEntry1, listEntry2) return self:CompareSortEntries(listEntry1, listEntry2) end)
     end
 end
 
@@ -350,6 +352,7 @@ function MailBuddyPagedList:OnLeaveRow(control, data)
     self:Row_OnMouseExit(control)
 end
 
+--AddDataTemplate("ZO_GamepadItemEntryTemplate", ZO_SharedGamepadEntry_OnSetup, ZO_GamepadMenuEntryTemplateParametricListFunction)
 function MailBuddyPagedList:AddDataTemplate(templateName, height, setupCallback, controlPoolPrefix)
     if not self.dataTypes[templateName] then
         local dataTypeInfo = {
@@ -370,12 +373,12 @@ function MailBuddyPagedList:AddEntry(templateName, data)
             data = data
         }
 
-        self.dataList[#self.dataList + 1] = entry
+        self.masterList[#self.masterList + 1] = entry
     end
 end
 
 function MailBuddyPagedList:Clear()
-    self.dataList = {}
+    self.masterList = {}
     for templateName, dataTypeInfo in pairs(self.dataTypes) do
         dataTypeInfo.pool:ReleaseAllObjects()
     end
@@ -417,7 +420,7 @@ end
 function MailBuddyPagedList:AcquireControl(dataIndex, relativeControl)
     local PADDING = 0
 
-    local templateName = self.dataList[dataIndex].templateName
+    local templateName = self.masterList[dataIndex].templateName
     local control, key = self.dataTypes[templateName].pool:AcquireObject()
 
     if relativeControl then
@@ -450,7 +453,7 @@ function MailBuddyPagedList:BuildPages()
 
     self.pages[currPageNum] = {startIndex = 1, count = 0}
 
-    for i,data in ipairs(self.dataList) do
+    for i,data in ipairs(self.masterList) do
         local templateName = data.templateName
 
         local height = self.dataTypes[templateName].height
@@ -465,7 +468,7 @@ function MailBuddyPagedList:BuildPages()
     end
 
     if(self.emptyRow) then
-        self.emptyRow:SetHidden(#self.dataList > 0)
+        self.emptyRow:SetHidden(#self.masterList > 0)
     end
 
     self.numPages = currPageNum
@@ -496,7 +499,7 @@ function MailBuddyPagedList:BuildPage(pageNum)
     local previousControl
     for i = page.startIndex, lastIndex do
 
-        local data = self.dataList[i]
+        local data = self.masterList[i]
         local control = self:AcquireControl(i, previousControl)
         data.control = control
         local selected = self:IsSelected(data.data)

@@ -18,6 +18,7 @@ local pagedListClasss = MB.PagedListClass
 --Recipients
 MB.PagedLists.recipients = pagedListClasss:New(MailBuddyRecipientsFrame, MB.SCROLLLIST_DATATYPE_RECIPIENTS)
 local recipients = MB.PagedLists.recipients
+local recipientRowTemplateName = "MailBuddyRecipientRow"
 
 function MB.InitializeRecipientsList()
     local listControl = recipients.list
@@ -26,30 +27,34 @@ function MB.InitializeRecipientsList()
 	recipients:SetupSortHeaders()
 end
 
-function recipients:SetupRowFunction(rowControl, data, scrollList)
+function recipients:SetupCallback(rowControl, data, selected, reselectingDuringRebuild, enabled, active)
 d("recipients:SetupRowFunction - name: " ..tostring(data.name))
     rowControl.data = data
     rowControl.name = GetControl(rowControl, "Name")
     rowControl.name:SetText(data.name)
+
     rowControl.name:SetHidden(false)
+    rowControl:SetHidden(false)
 end
 
 -- create datatype for scrollist
 function recipients:CreateScrollListDataType(control)
     local typeId = self.dataType
-    local templateName = "MailBuddyRecipientRow"
     local height = 30
-    local setupFunction = function(...) self:SetupRowFunction(...) end
+    local setupFunction = function(...) self:SetupCallback(...) end
     local hideCallback = nil
     local dataTypeSelectSound = nil
     local resetControlCallback = nil
+    local controlPoolPrefix = "MailBuddy_CP_"
     --local selectTemplate = "ZO_ThinListHighlight"
     --local selectCallback = function(...) self:OnSelectCallback(...) end
 
-    ZO_ScrollList_AddDataType(control, typeId, templateName, height, setupFunction, hideCallback, dataTypeSelectSound, resetControlCallback)
+    --ZO_ScrollList_AddDataType(control, typeId, templateName, height, setupFunction, hideCallback, dataTypeSelectSound, resetControlCallback)
     --ZO_ScrollList_EnableSelection(control, selectTemplate, selectCallback)
-    ZO_ScrollList_EnableHighlight(self.list, "ZO_ThinListHighlight")
-    self:SetAlternateRowBackgrounds(true)
+    --ZO_ScrollList_EnableHighlight(self.list, "ZO_ThinListHighlight")
+    --self:SetAlternateRowBackgrounds(true)
+
+    self:AddDataTemplate(recipientRowTemplateName, height, setupFunction, controlPoolPrefix)
 
     local footerControl = self.control:GetNamedChild("Footer")
     footerControl:SetHidden(false)
@@ -59,7 +64,7 @@ function recipients:BuildMasterList()
     self.masterList = {}
     local recis = MB.settingsVars.settings.SetRecipient
     for _, recipientName in ipairs(recis) do
-        table.insert(self.masterList, {
+        self:AddEntry(recipientRowTemplateName, {
             type = self.searchType,
             name = recipientName,
         })
@@ -74,7 +79,7 @@ function recipients:SetupSortHeaders()
     }
     self:SetupSort(self.defaultSortKeys, "name", ZO_SORT_ORDER_UP)
 
-    local headerContainer = self.sortHeaderGroup.headerContainer
+    local headerContainer = self.headerContainer
     pagedListClasss.SetSortHeaderTooltip(self, headerContainer:GetNamedChild("Name"), "Name", TOP, 0, -5)
 
     self.sortHeaderGroup:SelectAndResetSortForKey(self.currentSortKey)
