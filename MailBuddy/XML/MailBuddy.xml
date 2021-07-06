@@ -1,6 +1,116 @@
-<GuiXml>
+<GuiXml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sir.insidi.at/or/schema/esoui.xsd">
     <Controls>
 
+    <!-- MailBuddyPagedList - Virtual controls -->
+        <Label name="MailBuddyPagedListLabelTemplate" font="ZoFontGame" color="INTERFACE_COLOR_TYPE_TEXT_COLORS:INTERFACE_TEXT_COLOR_SELECTED" modifyTextType="UPPERCASE" verticalAlignment="CENTER" virtual="true" />
+        <Control name="MailBuddyPagedListFooterBar" virtual="true">
+            <Dimensions y="64" />
+            <Anchor point="BOTTOMLEFT" offsetY="-10" />
+            <Anchor point="BOTTOMRIGHT" offsetY="-10" />
+            <Controls>
+                <Label name="$(parent)PageNumberText" inherits="MailBuddyPagedListLabelTemplate">
+                    <Anchor point="CENTER" />
+                </Label>
+
+                <Button name="$(parent)PreviousButton" inherits="ZO_KeyButton">
+                    <Anchor point="RIGHT" relativeTo="$(parent)PageNumberText" relativePoint="LEFT" offsetX="-10" />
+                    <Dimensions x="50" y="50"/>
+                    <OnInitialized name="ZO_PagedList">
+                        self:SetKeyCode(KEY_PAGEDOWN)
+                    </OnInitialized>
+                </Button>
+
+                <Button name="$(parent)NextButton" inherits="ZO_KeyButton">
+                    <Anchor point="LEFT" relativeTo="$(parent)PageNumberText" relativePoint="RIGHT" offsetX="10" />
+                    <Dimensions x="50" y="50"/>
+                    <OnInitialized name="ZO_PagedList">
+                        self:SetKeyCode(KEY_PAGEUP)
+                    </OnInitialized>
+                </Button>
+            </Controls>
+        </Control>
+
+        <!-- Virtual labels -->
+        <Label name="MailBuddyRowLabel" font="MyFontGame16" wrapMode="ELLIPSIS" horizontalAlignment="LEFT" verticalAlignment="CENTER" virtual="true" >
+		</Label>
+
+        <!-- Virtual Rows -->
+		<Control name="MailBuddyRecipientRow" mouseEnabled="true" virtual="true">
+			<Dimensions y="30" />
+			<OnMouseEnter>
+
+			</OnMouseEnter>
+			<OnMouseExit>
+
+			</OnMouseExit>
+            <OnMouseUp>
+
+			</OnMouseUp>
+			<Controls>
+				<Texture name="$(parent)BG" inherits="ZO_ThinListBgStrip" />
+				<Label name="$(parent)Name" inherits="MailBuddyRowLabel">
+					<Anchor point="LEFT" />
+					<Anchor point="RIGHT" relativePoint="RIGHT" relativeTo="$(parent)" offsetX="-16" />
+					<Dimensions x="300" y="30" />
+				</Label>
+			</Controls>
+		</Control>
+
+        <!-- Sort header for the SortFilterLists -->
+        <!--<Control name="MailBuddySortHeader" inherits="ZO_SortHeaderBehavior" virtual="true">-->
+        <Control name="MailBuddySortHeader" inherits="ZO_SortHeader" virtual="true">
+            <Controls>
+                <!--
+                <Label name="$(parent)Name" font="MyFontGame20" color="INTERFACE_COLOR_TYPE_TEXT_COLORS:INTERFACE_TEXT_COLOR_NORMAL" horizontalAlignment="CENTER" verticalAlignment="CENTER" wrapMode="ELLIPSIS">
+                    <AnchorFill />
+                </Label>
+                -->
+            </Controls>
+        </Control>
+
+
+        <!-- MailBuddyPagedList - List control with footer -->
+        <TopLevelControl name="MailBuddyRecipientsFrame" hidden="false" mouseEnabled="true" movable="true">
+            <OnMoveStop>
+        		MailBuddy.OnTLCMoveStop(self)
+			</OnMoveStop>
+            <Dimensions x="300" y="400" />
+            <Anchor point="CENTER" offsetX="0" offsetY="0" />
+            <Controls>
+				<Backdrop name="$(parent)BG" inherits= "ZO_DefaultBackdrop">
+                    <AnchorFill/>
+                </Backdrop>
+                <Control name="$(parent)Headers">
+                    <Anchor point="TOPLEFT" offsetX="30" offsetY="51" />
+                    <Anchor point="TOPRIGHT" offsetY="51" />
+                    <Dimensions y="32" />
+                    <Controls>
+                        <Control name="$(parent)Name" inherits="MailBuddySortHeader">
+							<OnInitialized>
+								ZO_SortHeader_Initialize(self, "Name", "name", ZO_SORT_ORDER_UP, TEXT_ALIGN_LEFT, "ZoFontGameLargeBold")
+							</OnInitialized>
+                            <Anchor point="TOPLEFT" />
+                            <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" relativeTo="$(parent)" offsetX="-16" />
+                            <Dimensions x="300" y="32" />
+                        </Control>
+                    </Controls>
+                </Control>
+
+                <Control name="$(parent)List" inherits="ZO_ScrollList">
+                    <Anchor point="TOPLEFT" relativeTo="$(parent)Headers" relativePoint="BOTTOMLEFT" offsetY="3" />
+                    <Anchor point="BOTTOMRIGHT" offsetX="-35" offsetY="-32" />
+                </Control>
+
+                <Control name="$(parent)Footer" inherits="MailBuddyPagedListFooterBar">
+                    <Anchor point="TOPLEFT" relativeTo="$(parent)Headers" relativePoint="BOTTOMLEFT" offsetY="3" />
+                    <Anchor point="BOTTOMRIGHT" offsetX="-35" offsetY="-32" />
+                </Control>
+
+            </Controls>
+        </TopLevelControl>
+
+
+        <!-- Old fixed MailBuddy controls at the mail panel -->
         <Backdrop name="MailBuddy_MailSendRecipientLabel" layer = "1" level = "2" mouseEnabled = "true" inherits= "ZO_DefaultBackdrop" hidden="false">
 
             <Dimensions x ="175" y="40"/>

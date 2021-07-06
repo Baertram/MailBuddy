@@ -1,6 +1,6 @@
 <Bindings>
     <Layer name="SI_KEYBINDINGS_CATEGORY_GENERAL">
-        <Category name="Mail Buddy">
+        <Category name="|cFFFF00Mail Buddy|r">
             
             <Action name="MAILBUDDY_COPY">
                 <Down>
@@ -12,6 +12,7 @@
                     MailBuddy.keybindUsed = false
                 </Up>
             </Action>
+            
         </Category>
     </Layer>
 </Bindings>

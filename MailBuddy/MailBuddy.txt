@@ -1,46 +1,30 @@
 ## Title: |cEFEBBEMailBuddy|r
-## Author: Baertram and Minceraft
-## Version: 4
-## AddOnVersion: 400
-## APIVersion: 100034 100035
-## Description: A simple addon to help you create 'Return To Sender' mails, and store recipients & message subjects
-## SavedVariables: MailBuddy_SavedVars
-## DependsOn: LibAddonMenu-2.0>=32 LibMediaProvider-1.0>=17 LibLoadedAddons>=14
-## OptionalDependsOn: MailR
+## Author: |cFFFF00Baertram|r and |cFF0000Minceraft|r
+## Version: 4.0
+## AddOnVersion: 400000
+## APIVersion: 100035 101031
+## Description: A simple addon to help you create |cFF0000Return To Sender|r mails and quickly get needed inventory space! Now with an |cFF0000address book|r feature
+## SavedVariables: MailBuddy_SavedVars MailBuddy_Server_SavedVars
+## DependsOn: LibAddonMenu-2.0>=32 LibMediaProvider-1.0>=18
 
-## Constants etc.
+## Translations
+lang/en.lua
+lang/$(language).lua
+
+## Main files
 MailBuddy_Constants.lua
 
-##Settings
+src/classes/MailBuddy_PagedList.lua
+
 src/MailBuddy_Settings.lua
-src/MailBuddy_SettingsMenu.lua
-
-##Localization
-loc/MailBuddyLoc.lua
-src/MailBuddy_Localization.lua
-
-##Events
-src/MailBuddy_Events.lua
-
-##Hooks
-src/MailBuddy_Hooks.lua
-
-##Functions
-src/MailBuddy_Functions.lua
-
-##Other sources
 src/MailBuddy_Address.lua
-
-
-## Main file
 MailBuddy.lua
 
-
-## XML UI
-XML/MailBuddy.xml
+xml/MailBuddy.xml
+src/MailBuddy_PagedList.lua
 
 ## Keybindings
-Bindings/Bindings.xml
+xml/Bindings.xml
 
 
 
