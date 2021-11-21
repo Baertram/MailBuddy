@@ -19,8 +19,8 @@
    ä : \195\164    ö : \195\182    ü : \195\188
    ã : \195\163    õ : \195\181  				   \195\177 : \195\177
 ]]
-
-mb_loc = {
+local mb = MailBuddy
+mb.localizationVars.all = {
 	--English
     [1] = {
 		-- Options menu
@@ -517,8 +517,10 @@ mb_loc = {
         ["SI_BINDING_NAME_MAILBUDDY_GUILD_MEMBER_COPY"]	 = "Member -> MailBuddy",
     },
 }
+local mbAll = mb.localizationVars.all
+
 --Meta table trick to use english localization for german and french values, which are missing
-setmetatable(mb_loc[2], {__index = mb_loc[1]})
-setmetatable(mb_loc[3], {__index = mb_loc[1]})
-setmetatable(mb_loc[4], {__index = mb_loc[1]})
-setmetatable(mb_loc[5], {__index = mb_loc[1]})
+setmetatable(mbAll[2], {__index = mbAll[1]})
+setmetatable(mbAll[3], {__index = mbAll[1]})
+setmetatable(mbAll[4], {__index = mbAll[1]})
+setmetatable(mbAll[5], {__index = mbAll[1]})

@@ -1,38 +1,45 @@
-function MailBuddy.UpdateRecipientText(pageIndex, doDelete)
+local mb = MailBuddy
+
+local WM = WINDOW_MANAGER
+
+function mb.UpdateRecipientText(pageIndex, doDelete)
+--d("[MailBuddy]UpdateRecipientText-pageIndex: " ..tostring(pageIndex))
 	if pageIndex == nil then return end
 	doDelete = doDelete or false
 
-    local page, pageEntry = MailBuddy.mapPageAndEntry(pageIndex, "recipient")
+    local page, pageEntry = mb.mapPageAndEntry(pageIndex, "recipient")
     if page ~= nil and pageEntry ~= nil then
-		if MailBuddy.recipientPages.pages[page][pageEntry] ~= "" then
-			local labelControl = WINDOW_MANAGER:GetControlByName(MailBuddy.recipientPages.pages[page][pageEntry], "")
+        local settings = mb.settingsVars.settings
+        local pages = mb.recipientPages.pages
+		if pages[page][pageEntry] ~= "" then
+			local labelControl = WM:GetControlByName(pages[page][pageEntry], "")
 	        if labelControl ~= nil then
 				--local currentName = labelControl:GetText()
-                local currentName = MailBuddy.settingsVars.settings.SetRecipient[pageIndex]
-                local currentNameAbbreviated = MailBuddy.settingsVars.settings.SetRecipientAbbreviated[pageIndex] or currentName
+                local currentName = settings.SetRecipient[pageIndex]
+                local currentNameAbbreviated = settings.SetRecipientAbbreviated[pageIndex] or currentName
                 if currentName ~= nil and currentName ~= "" then
 				    if doDelete then
 						labelControl:SetText("")
-						MailBuddy.settingsVars.settings.SetRecipient[pageIndex] = ""
-                        MailBuddy.settingsVars.settings.SetRecipientAbbreviated[pageIndex] = ""
-						MailBuddy.PlaySoundNow(SOUNDS["MAIL_ITEM_DELETED"])
-	                    if MailBuddy.editRecipient ~= nil then
-		                    MailBuddy.editRecipient:TakeFocus()
+						mb.settingsVars.settings.SetRecipient[pageIndex] = ""
+                        mb.settingsVars.settings.SetRecipientAbbreviated[pageIndex] = ""
+						mb.PlaySoundNow(SOUNDS["MAIL_ITEM_DELETED"])
+	                    if mb.editRecipient ~= nil then
+		                    mb.editRecipient:TakeFocus()
 	                    end
 					else
-                        if not MailBuddy.settingsVars.settings.useAlternativeLayout then
-                            MailBuddy_MailSendRecipientLabelActiveText:SetText(string.format(currentNameAbbreviated))
-						    MailBuddy.UpdateEditFieldToolTip(MailBuddy_MailSendRecipientLabelActiveText, currentName, currentNameAbbreviated)
+                        if not settings.useAlternativeLayout then
+                            MailBuddy_MailSendRecipientLabelActiveText:SetText(currentNameAbbreviated)
+						    mb.UpdateEditFieldToolTip(MailBuddy_MailSendRecipientLabelActiveText, currentName, currentNameAbbreviated)
                         else
                             ZO_MailSendToField:SetText(string.format(currentName))
                         end
-						MailBuddy.settingsVars.settings.curRecipient = currentName
-                        MailBuddy.settingsVars.settings.curRecipientAbbreviated = currentNameAbbreviated
+						mb.settingsVars.settings.curRecipient = currentName
+                        mb.settingsVars.settings.curRecipientAbbreviated = currentNameAbbreviated
                         --Remember the last used recipient text
-                        MailBuddy.settingsVars.settings.remember.recipient["text"] = currentName
-                        MailBuddy.FocusNextField()
-                        MailBuddy.PlaySoundNow(SOUNDS["QUEST_FOCUSED"])
-                        MailBuddy.AutoCloseBox("recipients")
+                        mb.settingsVars.settings.remember.recipient["text"] = currentName
+                        mb.FocusNextField()
+                        mb.PlaySoundNow(SOUNDS["QUEST_FOCUSED"])
+                        mb.AutoCloseBox("recipients")
                     end
 				end
 	        end
@@ -42,60 +49,63 @@ function MailBuddy.UpdateRecipientText(pageIndex, doDelete)
     SOUNDS["EDIT_CLICK"] = SOUNDS["EDIT_CLICK_MAILBUDDY_BACKUP"]
 end
 
-function MailBuddy.UpdateSubjectText(pageIndex, doDelete, newText)
+function mb.UpdateSubjectText(pageIndex, doDelete, newText)
+--d("[MailBuddy]UpdateSubjectText-pageIndex: " ..tostring(pageIndex) .. ", newText: " ..tostring(newText))
 	if pageIndex == nil and (newText == nil or newText == "") then return end
+    local settings = mb.settingsVars.settings
     --Only update the MailBuddy label/ZOs mail subject field witht he given text here
 	if pageIndex == nil and (newText ~= nil and newText ~= "") then
-        if not MailBuddy.settingsVars.settings.useAlternativeLayout then
-            MailBuddy_MailSendSubjectLabelActiveText:SetText(string.format(newText))
-            MailBuddy.UpdateEditFieldToolTip(MailBuddy_MailSendSubjectLabelActiveText, newText, newText)
+        if not settings.useAlternativeLayout then
+            MailBuddy_MailSendSubjectLabelActiveText:SetText(newText)
+            mb.UpdateEditFieldToolTip(MailBuddy_MailSendSubjectLabelActiveText, newText, newText)
         else
-            ZO_MailSendSubjectField:SetText(string.format(newText))
+            ZO_MailSendSubjectField:SetText(newText)
         end
-        MailBuddy.settingsVars.settings.curSubject = newText
-        MailBuddy.settingsVars.settings.curSubjectAbbreviated = newText
+        mb.settingsVars.settings.curSubject = newText
+        mb.settingsVars.settings.curSubjectAbbreviated = newText
         --Remember the last used subject text
-        MailBuddy.settingsVars.settings.remember.subject["text"]   = newText
-        MailBuddy.FocusNextField()
-        MailBuddy.PlaySoundNow(SOUNDS["QUEST_FOCUSED"])
-        MailBuddy.AutoCloseBox("subjects")
+        mb.settingsVars.settings.remember.subject["text"]   = newText
+        mb.FocusNextField()
+        mb.PlaySoundNow(SOUNDS["QUEST_FOCUSED"])
+        mb.AutoCloseBox("subjects")
         --Revert to the original edit box clicked sound
         SOUNDS["EDIT_CLICK"] = SOUNDS["EDIT_CLICK_MAILBUDDY_BACKUP"]
         return
     end
 	doDelete = doDelete or false
 
-    local page, pageEntry = MailBuddy.mapPageAndEntry(pageIndex, "subject")
+    local page, pageEntry = mb.mapPageAndEntry(pageIndex, "subject")
     if page ~= nil and pageEntry ~= nil then
-		if MailBuddy.subjectPages.pages[page][pageEntry] ~= "" then
-			local labelControl = WINDOW_MANAGER:GetControlByName(MailBuddy.subjectPages.pages[page][pageEntry], "")
+        local pages = mb.subjectPages.pages
+		if pages[page][pageEntry] ~= "" then
+			local labelControl = WM:GetControlByName(pages[page][pageEntry], "")
 	        if labelControl ~= nil then
 				--local currentSubject = labelControl:GetText()
-    			local currentSubject = MailBuddy.settingsVars.settings.SetSubject[pageIndex]
-    			local currentSubjectAbbreviated = MailBuddy.settingsVars.settings.SetSubjectAbbreviated[pageIndex] or currentSubject
+    			local currentSubject = settings.SetSubject[pageIndex]
+    			local currentSubjectAbbreviated = settings.SetSubjectAbbreviated[pageIndex] or currentSubject
 				if currentSubject ~= nil and currentSubject ~= "" then
 				    if doDelete then
 						labelControl:SetText("")
-						MailBuddy.settingsVars.settings.SetSubject[pageIndex] = ""
-						MailBuddy.settingsVars.settings.SetSubjectAbbreviated[pageIndex] = ""
-						MailBuddy.PlaySoundNow(SOUNDS["MAIL_ITEM_DELETED"])
-                        if MailBuddy.editSubject ~= nil then
-	                        MailBuddy.editSubject:TakeFocus()
+						mb.settingsVars.settings.SetSubject[pageIndex] = ""
+						mb.settingsVars.settings.SetSubjectAbbreviated[pageIndex] = ""
+						mb.PlaySoundNow(SOUNDS["MAIL_ITEM_DELETED"])
+                        if mb.editSubject ~= nil then
+	                        mb.editSubject:TakeFocus()
                         end
 					else
-                        if not MailBuddy.settingsVars.settings.useAlternativeLayout then
-                            MailBuddy_MailSendSubjectLabelActiveText:SetText(string.format(currentSubjectAbbreviated))
-                            MailBuddy.UpdateEditFieldToolTip(MailBuddy_MailSendSubjectLabelActiveText, currentSubject, currentSubjectAbbreviated)
+                        if not settings.useAlternativeLayout then
+                            MailBuddy_MailSendSubjectLabelActiveText:SetText(currentSubjectAbbreviated)
+                            mb.UpdateEditFieldToolTip(MailBuddy_MailSendSubjectLabelActiveText, currentSubject, currentSubjectAbbreviated)
                         else
-                            ZO_MailSendSubjectField:SetText(string.format(currentSubject))
+                            ZO_MailSendSubjectField:SetText(currentSubject)
                         end
-						MailBuddy.settingsVars.settings.curSubject = currentSubject
-                        MailBuddy.settingsVars.settings.curSubjectAbbreviated = currentSubjectAbbreviated
+						mb.settingsVars.settings.curSubject = currentSubject
+                        mb.settingsVars.settings.curSubjectAbbreviated = currentSubjectAbbreviated
                         --Remember the last used subject text
-                        MailBuddy.settingsVars.settings.remember.subject["text"]   = currentSubject
-                        MailBuddy.FocusNextField()
-                        MailBuddy.PlaySoundNow(SOUNDS["QUEST_FOCUSED"])
-                        MailBuddy.AutoCloseBox("subjects")
+                        mb.settingsVars.settings.remember.subject["text"]   = currentSubject
+                        mb.FocusNextField()
+                        mb.PlaySoundNow(SOUNDS["QUEST_FOCUSED"])
+                        mb.AutoCloseBox("subjects")
                     end
 				end
 	        end
@@ -105,14 +115,14 @@ function MailBuddy.UpdateSubjectText(pageIndex, doDelete, newText)
     SOUNDS["EDIT_CLICK"] = SOUNDS["EDIT_CLICK_MAILBUDDY_BACKUP"]
 end
 
-function MailBuddy.StoreRecipient()
+function mb.StoreRecipient()
     --Check if the keybinding was pressed inside the guild roster or friends list, or if the mail send panel is open
     --and abort if not one of the panels is opened
     if 	  ZO_GuildRoster:IsHidden()
        and ZO_KeyboardFriendsList:IsHidden()
        and ZO_MailSend:IsHidden() then
     	return
-    elseif not ZO_MailSend:IsHidden() and MailBuddy.keybindUsed then
+    elseif not ZO_MailSend:IsHidden() and mb.keybindUsed then
     	return
     end
 
@@ -120,7 +130,7 @@ function MailBuddy.StoreRecipient()
     --The new entered recipient text (sent by RETURN key)
 	local enteredName = MailBuddy_MailSendRecipientsBoxEditNewRecipient:GetText()
 	--Abort here if no name was given and just RETURN key was pressed
-	if enteredName == "" or enteredName == MailBuddy.playerName or enteredName == MailBuddy.accountName then
+	if enteredName == "" or enteredName == mb.playerName or enteredName == mb.accountName then
     	return
     else
     	--Check if the entered name is valid
@@ -137,12 +147,13 @@ function MailBuddy.StoreRecipient()
 
 	--Add the text of the already saved names to an arry for a later comparison etc.
 	local SetRecipients = {}
-    for i = 1, MailBuddy.recipientPages.totalEntries, 1 do
-	    local page, pageEntry = MailBuddy.mapPageAndEntry(i, "recipient")
+    local recipientPages = mb.recipientPages
+    for i = 1, recipientPages.totalEntries, 1 do
+	    local page, pageEntry = mb.mapPageAndEntry(i, "recipient")
 	    if page ~= nil and pageEntry ~= nil then
-			local editControl = WINDOW_MANAGER:GetControlByName(MailBuddy.recipientPages.pages[page][pageEntry], "")
+			local editControl = WM:GetControlByName(recipientPages.pages[page][pageEntry], "")
 			if editControl ~= nil then
---d("SetRecipients["..i.."] = MailBuddy.recipientPages.pages["..page.."]["..pageEntry.."]: " .. editControl:GetName())
+--d("SetRecipients["..i.."] = mb.recipientPages.pages["..page.."]["..pageEntry.."]: " .. editControl:GetName())
 	   			SetRecipients[i] = editControl:GetText()
 	        end
 		end
@@ -155,16 +166,18 @@ function MailBuddy.StoreRecipient()
     newEntry.page = 0
     newEntry.pageEntry = 0
     newEntry.index = 0
+    local chatOutputRecipientAlreadyInListStr = mb.localizationVars.mb_loc["chat_output_recipient_already_in_list"]
+
 	--Check all entered names before adding a new one
 	for idx, nameText in pairs(SetRecipients) do
-	    local page, pageEntry = MailBuddy.mapPageAndEntry(idx, "recipient")
+	    local page, pageEntry = mb.mapPageAndEntry(idx, "recipient")
 	    if page ~= nil and pageEntry ~= nil then
 --d("Stored name: " .. nameText .. ", New name: " .. enteredName)
 			--Compare the stored name with the new entered name
 			if string.lower(nameText) == string.lower(enteredName) then
 				--d("[MailBuddy] Recipient name is already in the list!")
-                MailBuddy.PlaySoundNow(SOUNDS["GENERAL_ALERT_ERROR"])
-                d(MailBuddy.localizationVars.mb_loc["chat_output_recipient_already_in_list"])
+                mb.PlaySoundNow(SOUNDS["GENERAL_ALERT_ERROR"])
+                d(chatOutputRecipientAlreadyInListStr)
                 alreadyInList = true
 				--Abort here as name is already in the list
 		       	break
@@ -184,40 +197,41 @@ function MailBuddy.StoreRecipient()
     end
 	--Was an empty entry found? Add the new name now
 	if newEntry.found == true and newEntry.page ~= 0 and newEntry.index ~= 0 and newEntry.pageEntry ~= 0 then
-        local newNameEditControl = WINDOW_MANAGER:GetControlByName(MailBuddy.recipientPages.pages[newEntry.page][newEntry.pageEntry], "")
-		MailBuddy.settingsVars.settings.SetRecipient[newEntry.index] = enteredName
+        local newNameEditControl = WM:GetControlByName(recipientPages.pages[newEntry.page][newEntry.pageEntry], "")
+		mb.settingsVars.settings.SetRecipient[newEntry.index] = enteredName
         local shortendName
-        if string.len(enteredName) > MailBuddy.maximumCharacters["recipients"] then
-        	shortendName = string.sub(enteredName, 1, (MailBuddy.maximumCharacters["recipients"])) .. "..."
+        local maxCharRec = mb.maximumCharacters["recipients"]
+        if string.len(enteredName) > maxCharRec then
+        	shortendName = string.sub(enteredName, 1, maxCharRec) .. "..."
         else
         	shortendName = enteredName
         end
-        MailBuddy.settingsVars.settings.SetRecipientAbbreviated[newEntry.index] = shortendName
+        mb.settingsVars.settings.SetRecipientAbbreviated[newEntry.index] = shortendName
     	newNameEditControl:SetText(string.format(shortendName))
-		MailBuddy.editRecipient:Clear()
-		MailBuddy.UpdateEditFieldToolTip(newNameEditControl, enteredName, shortendName)
-        if MailBuddy.settingsVars.settings.useAlternativeLayout then
+		mb.editRecipient:Clear()
+		mb.UpdateEditFieldToolTip(newNameEditControl, enteredName, shortendName)
+        if mb.settingsVars.settings.useAlternativeLayout then
             if ZO_MailSendToField:GetText() == "" then
                 ZO_MailSendToField:SetText(string.format(enteredName))
                 --Remember the last used recipient text
-                MailBuddy.settingsVars.settings.remember.recipient["text"] = enteredName
+                mb.settingsVars.settings.remember.recipient["text"] = enteredName
             end
         end
-        MailBuddy.FocusNextField()
-    	MailBuddy.PlaySoundNow(nil, ITEM_SOUND_CATEGORY_RING, ITEM_SOUND_ACTION_SLOT)
-        MailBuddy.AutoCloseBox("recipients")
+        mb.FocusNextField()
+    	mb.PlaySoundNow(nil, ITEM_SOUND_CATEGORY_RING, ITEM_SOUND_ACTION_SLOT)
+        mb.AutoCloseBox("recipients")
         return
     elseif not alreadyInList then
         --d("[MailBuddy] Your recipients list is full. Please delete at least one entry!")
-        MailBuddy.PlaySoundNow(SOUNDS["GENERAL_ALERT_ERROR"])
-        d(MailBuddy.localizationVars.mb_loc["chat_output_recipient_list_full"])
+        mb.PlaySoundNow(SOUNDS["GENERAL_ALERT_ERROR"])
+        d(mb.localizationVars.mb_loc["chat_output_recipient_list_full"])
     end
     --Revert to the original edit box clicked sound
     SOUNDS["EDIT_CLICK"] = SOUNDS["EDIT_CLICK_MAILBUDDY_BACKUP"]
 	return
 end
 
-function MailBuddy.StoreSubject()
+function mb.StoreSubject()
 --d("StoreSub")
     --The new entered subject text (sent by RETURN key)
 	local enteredSubject = MailBuddy_MailSendSubjectsBoxEditNewSubject:GetText()
@@ -232,8 +246,8 @@ function MailBuddy.StoreSubject()
     	local lowerCaseEnteredSubject = string.lower(enteredSubject)
         if lowerCaseEnteredSubject == "return" or lowerCaseEnteredSubject == "rts" or lowerCaseEnteredSubject == "bounce" then
             --d("[MailBuddy] Subject is already fixed at the top of the list!")
-            MailBuddy.PlaySoundNow(SOUNDS["GENERAL_ALERT_ERROR"])
-            d(MailBuddy.localizationVars.mb_loc["chat_output_subject_already_in_fixed_list"])
+            mb.PlaySoundNow(SOUNDS["GENERAL_ALERT_ERROR"])
+            d(mb.localizationVars.mb_loc["chat_output_subject_already_in_fixed_list"])
             --Revert to the original edit box clicked sound
             return
         end
@@ -241,13 +255,14 @@ function MailBuddy.StoreSubject()
 
 	--Add the text of the already saved names to an arry for a later comparison etc.
 	local SubjectLines = {}
-    for i = 1, MailBuddy.subjectPages.totalEntries, 1 do
-	    local page, pageEntry = MailBuddy.mapPageAndEntry(i, "subject")
+    local subjectPages = mb.subjectPages
+    for i = 1, subjectPages.totalEntries, 1 do
+	    local page, pageEntry = mb.mapPageAndEntry(i, "subject")
 	    if page ~= nil and pageEntry ~= nil then
 --d("Page: " .. page .. ", pageEntry: " .. pageEntry)
-			local editControl = WINDOW_MANAGER:GetControlByName(MailBuddy.subjectPages.pages[page][pageEntry], "")
+			local editControl = WM:GetControlByName(subjectPages.pages[page][pageEntry], "")
 			if editControl ~= nil then
---d("SubjectLines["..i.."] = MailBuddy.subjectPages.pages["..page.."]["..pageEntry.."]: " .. editControl:GetName())
+--d("SubjectLines["..i.."] = mb.subjectPages.pages["..page.."]["..pageEntry.."]: " .. editControl:GetName())
 	   			SubjectLines[i] = editControl:GetText()
 	        end
 		end
@@ -260,16 +275,18 @@ function MailBuddy.StoreSubject()
     newEntry.page = 0
     newEntry.pageEntry = 0
     newEntry.index = 0
+    local chatOutputSubjectAlreadyInListStr = mb.localizationVars.mb_loc["chat_output_subject_already_in_list"]
+
 	--Check all entered names before adding a new one
 	for idx, subjectText in pairs(SubjectLines) do
-	    local page, pageEntry = MailBuddy.mapPageAndEntry(idx, "subject")
+	    local page, pageEntry = mb.mapPageAndEntry(idx, "subject")
 	    if page ~= nil and pageEntry ~= nil then
 --d("Stored subject: " .. subjectText .. ", New subject: " .. enteredSubject)
 			--Compare the stored subject with the new entered subject
 			if string.lower(subjectText) == string.lower(enteredSubject) then
 				--d("[MailBuddy] Subject is already in the list!")
-                MailBuddy.PlaySoundNow(SOUNDS["GENERAL_ALERT_ERROR"])
-            	d(MailBuddy.localizationVars.mb_loc["chat_output_subject_already_in_list"])
+                mb.PlaySoundNow(SOUNDS["GENERAL_ALERT_ERROR"])
+            	d(chatOutputSubjectAlreadyInListStr)
                 alreadyInList = true
 				--Abort here as subject is already in the list
 		       	break
@@ -289,33 +306,34 @@ function MailBuddy.StoreSubject()
 	end
 	--Was an empty entry found? Add the new subject now
 	if newEntry.found == true and newEntry.page ~= 0 and newEntry.index ~= 0 and newEntry.pageEntry ~= 0 then
-        local newSubjectEditControl = WINDOW_MANAGER:GetControlByName(MailBuddy.subjectPages.pages[newEntry.page][newEntry.pageEntry], "")
-		MailBuddy.settingsVars.settings.SetSubject[newEntry.index] = enteredSubject
+        local newSubjectEditControl = WM:GetControlByName(subjectPages.pages[newEntry.page][newEntry.pageEntry], "")
+		mb.settingsVars.settings.SetSubject[newEntry.index] = enteredSubject
         local shortendSubject
-        if string.len(enteredSubject) > MailBuddy.maximumCharacters["subjects"] then
-			shortendSubject = string.sub(enteredSubject, 1, (MailBuddy.maximumCharacters["subjects"])) .. "..."
+        local maxCharSub = mb.maximumCharacters["subjects"]
+        if string.len(enteredSubject) > maxCharSub then
+			shortendSubject = string.sub(enteredSubject, 1, maxCharSub) .. "..."
         else
         	shortendSubject = enteredSubject
         end
-		MailBuddy.settingsVars.settings.SetSubjectAbbreviated[newEntry.index] = shortendSubject
+		mb.settingsVars.settings.SetSubjectAbbreviated[newEntry.index] = shortendSubject
     	newSubjectEditControl:SetText(string.format(shortendSubject))
-		MailBuddy.UpdateEditFieldToolTip(newSubjectEditControl, enteredSubject, shortendSubject)
-		MailBuddy.editRecipient:Clear()
-        if MailBuddy.settingsVars.settings.useAlternativeLayout then
+		mb.UpdateEditFieldToolTip(newSubjectEditControl, enteredSubject, shortendSubject)
+		mb.editRecipient:Clear()
+        if mb.settingsVars.settings.useAlternativeLayout then
             if ZO_MailSendSubjectField:GetText() == "" then
                 ZO_MailSendSubjectField:SetText(string.format(enteredSubject))
                 --Remember the last used subject text
-                MailBuddy.settingsVars.settings.remember.subject["text"]   = enteredSubject
+                mb.settingsVars.settings.remember.subject["text"]   = enteredSubject
             end
         end
-        MailBuddy.FocusNextField()
-    	MailBuddy.PlaySoundNow(nil, ITEM_SOUND_CATEGORY_RING, ITEM_SOUND_ACTION_SLOT)
-        MailBuddy.AutoCloseBox("subjects")
+        mb.FocusNextField()
+    	mb.PlaySoundNow(nil, ITEM_SOUND_CATEGORY_RING, ITEM_SOUND_ACTION_SLOT)
+        mb.AutoCloseBox("subjects")
         return
     elseif not alreadyInList then
         --d("[MailBuddy] Your subjects list is full. Please delete at least one entry!")
-        MailBuddy.PlaySoundNow(SOUNDS["GENERAL_ALERT_ERROR"])
-		d(MailBuddy.localizationVars.mb_loc["chat_output_subject_list_full"])
+        mb.PlaySoundNow(SOUNDS["GENERAL_ALERT_ERROR"])
+		d(mb.localizationVars.mb_loc["chat_output_subject_list_full"])
     end
 
 	return

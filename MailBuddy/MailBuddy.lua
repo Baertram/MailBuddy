@@ -1,28 +1,40 @@
     --The addon table/array
     MailBuddy = {}
-    --Information about the addon
-    MailBuddy.addonVars = {}
-    MailBuddy.addonVars.name = "MailBuddy"
-    MailBuddy.addonVars.displayName = "|cFFFF00MailBuddy|r"
-    MailBuddy.addonVars.author = "|cFF0000Minceraft|r and |cFFFF00Baertram|r"
-	MailBuddy.addonVars.addonVersionOptionsNumber = 3.1
-    MailBuddy.addonVars.version = tostring(MailBuddy.addonVars.addonVersionOptionsNumber)
+    local mb = MailBuddy
 
-    MailBuddy.addonVars.savedVariablesName = "MailBuddy_SavedVars"
-    MailBuddy.addonVars.gSettingsLoaded = false
+    --Information about the addon
+    mb.addonVars = {}
+    mb.addonVars.name = "MailBuddy"
+    mb.addonVars.displayName = "|cFFFF00MailBuddy|r"
+    mb.addonVars.author = "|cFF0000Minceraft|r and |cFFFF00Baertram|r"
+	mb.addonVars.addonVersionOptionsNumber = 3.3
+    mb.addonVars.version = tostring(mb.addonVars.addonVersionOptionsNumber)
+
+    mb.addonVars.savedVariablesName = "MailBuddy_SavedVars"
+    mb.addonVars.gSettingsLoaded = false
+    local addonVars =  mb.addonVars
+    local addonName = addonVars.name
 
     --Librraies
     local LAM = LibAddonMenu2
-    if LAM == nil and LibStub then LAM = LibStub('LibAddonMenu-2.0') end
     local LMP = LibMediaProvider
-    if LMP == nil and LibStub then LMP = LibStub('LibMediaProvider-1.0') end
-    local LIBLA = LibLoadedAddons
-    if LIBLA == nil and LibStub then LIBLA = LibStub('LibLoadedAddons') end
+
+    local EM = EVENT_MANAGER
+    local SM = SCENE_MANAGER
+    local WM = WINDOW_MANAGER
+    
+    mb.guildRosterAndFriendsListRowPatterns = {
+        "^ZO_KeyboardFriendsListList1Row%d+DisplayName*",
+        "^ZO_KeyboardFriendsListList1Row%d%d+DisplayName*",
+        "^ZO_GuildRosterList1Row%d+DisplayName*",
+        "^ZO_GuildRosterList1Row%d%d+DisplayName*",
+    }
+    local guildRosterAndFriendsListRowPatterns = mb.guildRosterAndFriendsListRowPatterns
 
     --The arrays for the saved variables
-    MailBuddy.settingsVars	= {}
-    MailBuddy.settingsVars.settingsVersion = 2.4
-    MailBuddy.settingsVars.fontStyles = {
+    mb.settingsVars	= {}
+    mb.settingsVars.settingsVersion = 2.4
+    mb.settingsVars.fontStyles = {
         "none",
         "outline",
         "thin-outline",
@@ -32,119 +44,121 @@
         "soft-shadow-thick",
     }
     --Additional settings arrays for the first run of this addon, default values, etc.
-    MailBuddy.settingsVars.settings			= {}
-    MailBuddy.settingsVars.defaultSettings	= {}
-    MailBuddy.settingsVars.firstRunSettings = {}
-    MailBuddy.settingsVars.defaults			= {}
+    mb.settingsVars.settings			= {}
+    mb.settingsVars.defaultSettings	= {}
+    mb.settingsVars.firstRunSettings = {}
+    mb.settingsVars.defaults			= {}
 
     --The LAM settings panel
-	MailBuddy.SettingsPanel = nil
+	mb.SettingsPanel = nil
 
     --Array with prevention variables
-    MailBuddy.preventerVars = {}
-    MailBuddy.preventerVars.gLocalizationDone = false
-    MailBuddy.preventerVars.KeyBindingTexts   = false
-    MailBuddy.preventerVars.dontUseLastRecipientName = false
+    mb.preventerVars = {}
+    mb.preventerVars.gLocalizationDone = false
+    mb.preventerVars.KeyBindingTexts   = false
+    mb.preventerVars.dontUseLastRecipientName = false
 
 	--Build list of saved text controls for the recipients
-	MailBuddy.recipientPages = {}
-    MailBuddy.recipientPages.pages = {}
+	mb.recipientPages = {}
+    mb.recipientPages.pages = {}
 	--Page 1
-    MailBuddy.recipientPages.pages[1] = {}
-    table.insert(MailBuddy.recipientPages.pages[1], 1, "MailBuddy_RecipientsPage1CustomRecipientLabel1")
-    table.insert(MailBuddy.recipientPages.pages[1], 2, "MailBuddy_RecipientsPage1CustomRecipientLabel2")
-    table.insert(MailBuddy.recipientPages.pages[1], 3, "MailBuddy_RecipientsPage1CustomRecipientLabel3")
-    table.insert(MailBuddy.recipientPages.pages[1], 4, "MailBuddy_RecipientsPage1CustomRecipientLabel4")
-    table.insert(MailBuddy.recipientPages.pages[1], 5, "MailBuddy_RecipientsPage1CustomRecipientLabel5")
-    table.insert(MailBuddy.recipientPages.pages[1], 6, "MailBuddy_RecipientsPage1CustomRecipientLabel6")
-    table.insert(MailBuddy.recipientPages.pages[1], 7, "MailBuddy_RecipientsPage1CustomRecipientLabel7")
+    mb.recipientPages.pages[1] = {}
+    table.insert(mb.recipientPages.pages[1], 1, "MailBuddy_RecipientsPage1CustomRecipientLabel1")
+    table.insert(mb.recipientPages.pages[1], 2, "MailBuddy_RecipientsPage1CustomRecipientLabel2")
+    table.insert(mb.recipientPages.pages[1], 3, "MailBuddy_RecipientsPage1CustomRecipientLabel3")
+    table.insert(mb.recipientPages.pages[1], 4, "MailBuddy_RecipientsPage1CustomRecipientLabel4")
+    table.insert(mb.recipientPages.pages[1], 5, "MailBuddy_RecipientsPage1CustomRecipientLabel5")
+    table.insert(mb.recipientPages.pages[1], 6, "MailBuddy_RecipientsPage1CustomRecipientLabel6")
+    table.insert(mb.recipientPages.pages[1], 7, "MailBuddy_RecipientsPage1CustomRecipientLabel7")
 	--Page 2
-    MailBuddy.recipientPages.pages[2] = {}
-    table.insert(MailBuddy.recipientPages.pages[2], 1, "MailBuddy_RecipientsPage2CustomRecipientLabel8")
-    table.insert(MailBuddy.recipientPages.pages[2], 2, "MailBuddy_RecipientsPage2CustomRecipientLabel9")
-    table.insert(MailBuddy.recipientPages.pages[2], 3, "MailBuddy_RecipientsPage2CustomRecipientLabel10")
-    table.insert(MailBuddy.recipientPages.pages[2], 4, "MailBuddy_RecipientsPage2CustomRecipientLabel11")
-    table.insert(MailBuddy.recipientPages.pages[2], 5, "MailBuddy_RecipientsPage2CustomRecipientLabel12")
-    table.insert(MailBuddy.recipientPages.pages[2], 6, "MailBuddy_RecipientsPage2CustomRecipientLabel13")
-    table.insert(MailBuddy.recipientPages.pages[2], 7, "MailBuddy_RecipientsPage2CustomRecipientLabel14")
+    mb.recipientPages.pages[2] = {}
+    table.insert(mb.recipientPages.pages[2], 1, "MailBuddy_RecipientsPage2CustomRecipientLabel8")
+    table.insert(mb.recipientPages.pages[2], 2, "MailBuddy_RecipientsPage2CustomRecipientLabel9")
+    table.insert(mb.recipientPages.pages[2], 3, "MailBuddy_RecipientsPage2CustomRecipientLabel10")
+    table.insert(mb.recipientPages.pages[2], 4, "MailBuddy_RecipientsPage2CustomRecipientLabel11")
+    table.insert(mb.recipientPages.pages[2], 5, "MailBuddy_RecipientsPage2CustomRecipientLabel12")
+    table.insert(mb.recipientPages.pages[2], 6, "MailBuddy_RecipientsPage2CustomRecipientLabel13")
+    table.insert(mb.recipientPages.pages[2], 7, "MailBuddy_RecipientsPage2CustomRecipientLabel14")
 	--Page 3
-    MailBuddy.recipientPages.pages[3] = {}
-    table.insert(MailBuddy.recipientPages.pages[3], 1, "MailBuddy_RecipientsPage3CustomRecipientLabel15")
-    table.insert(MailBuddy.recipientPages.pages[3], 2, "MailBuddy_RecipientsPage3CustomRecipientLabel16")
-    table.insert(MailBuddy.recipientPages.pages[3], 3, "MailBuddy_RecipientsPage3CustomRecipientLabel17")
-    table.insert(MailBuddy.recipientPages.pages[3], 4, "MailBuddy_RecipientsPage3CustomRecipientLabel18")
-    table.insert(MailBuddy.recipientPages.pages[3], 5, "MailBuddy_RecipientsPage3CustomRecipientLabel19")
-    table.insert(MailBuddy.recipientPages.pages[3], 6, "MailBuddy_RecipientsPage3CustomRecipientLabel20")
-    table.insert(MailBuddy.recipientPages.pages[3], 7, "MailBuddy_RecipientsPage3CustomRecipientLabel21")
+    mb.recipientPages.pages[3] = {}
+    table.insert(mb.recipientPages.pages[3], 1, "MailBuddy_RecipientsPage3CustomRecipientLabel15")
+    table.insert(mb.recipientPages.pages[3], 2, "MailBuddy_RecipientsPage3CustomRecipientLabel16")
+    table.insert(mb.recipientPages.pages[3], 3, "MailBuddy_RecipientsPage3CustomRecipientLabel17")
+    table.insert(mb.recipientPages.pages[3], 4, "MailBuddy_RecipientsPage3CustomRecipientLabel18")
+    table.insert(mb.recipientPages.pages[3], 5, "MailBuddy_RecipientsPage3CustomRecipientLabel19")
+    table.insert(mb.recipientPages.pages[3], 6, "MailBuddy_RecipientsPage3CustomRecipientLabel20")
+    table.insert(mb.recipientPages.pages[3], 7, "MailBuddy_RecipientsPage3CustomRecipientLabel21")
 
 	--Variables for the entries on recipient pages
-    MailBuddy.recipientPages.entriesPerPage = 7
-    MailBuddy.recipientPages.totalEntries = 21
-    MailBuddy.recipientPages.maxEntriesUntilHere = {}
-    MailBuddy.recipientPages.maxEntriesUntilHere[1] = 7
-    MailBuddy.recipientPages.maxEntriesUntilHere[2] = 14
-    MailBuddy.recipientPages.maxEntriesUntilHere[3] = 21
-    MailBuddy.recipientPages.selectedLabel = "MailBuddy_MailSendRecipientLabelActiveText"
+    mb.recipientPages.entriesPerPage = 7
+    mb.recipientPages.totalEntries = 21
+    mb.recipientPages.maxEntriesUntilHere = {}
+    mb.recipientPages.maxEntriesUntilHere[1] = 7
+    mb.recipientPages.maxEntriesUntilHere[2] = 14
+    mb.recipientPages.maxEntriesUntilHere[3] = 21
+    mb.recipientPages.selectedLabel = "MailBuddy_MailSendRecipientLabelActiveText"
 
 	--Build list of saved text controls for the subjects
-	MailBuddy.subjectPages = {}
-    MailBuddy.subjectPages.pages = {}
+	mb.subjectPages = {}
+    mb.subjectPages.pages = {}
 	--Page 1
-    MailBuddy.subjectPages.pages[1] = {}
-    table.insert(MailBuddy.subjectPages.pages[1], 1, "MailBuddy_SubjectsPage1CustomSubjectLabel1")
-    table.insert(MailBuddy.subjectPages.pages[1], 2, "MailBuddy_SubjectsPage1CustomSubjectLabel2")
-    table.insert(MailBuddy.subjectPages.pages[1], 3, "MailBuddy_SubjectsPage1CustomSubjectLabel3")
-    table.insert(MailBuddy.subjectPages.pages[1], 4, "MailBuddy_SubjectsPage1CustomSubjectLabel4")
-    table.insert(MailBuddy.subjectPages.pages[1], 5, "MailBuddy_SubjectsPage1CustomSubjectLabel5")
+    mb.subjectPages.pages[1] = {}
+    table.insert(mb.subjectPages.pages[1], 1, "MailBuddy_SubjectsPage1CustomSubjectLabel1")
+    table.insert(mb.subjectPages.pages[1], 2, "MailBuddy_SubjectsPage1CustomSubjectLabel2")
+    table.insert(mb.subjectPages.pages[1], 3, "MailBuddy_SubjectsPage1CustomSubjectLabel3")
+    table.insert(mb.subjectPages.pages[1], 4, "MailBuddy_SubjectsPage1CustomSubjectLabel4")
+    table.insert(mb.subjectPages.pages[1], 5, "MailBuddy_SubjectsPage1CustomSubjectLabel5")
 	--Page 2
-    MailBuddy.subjectPages.pages[2] = {}
-    table.insert(MailBuddy.subjectPages.pages[2], 1, "MailBuddy_SubjectsPage2CustomSubjectLabel6")
-    table.insert(MailBuddy.subjectPages.pages[2], 2, "MailBuddy_SubjectsPage2CustomSubjectLabel7")
-    table.insert(MailBuddy.subjectPages.pages[2], 3, "MailBuddy_SubjectsPage2CustomSubjectLabel8")
-    table.insert(MailBuddy.subjectPages.pages[2], 4, "MailBuddy_SubjectsPage2CustomSubjectLabel9")
-    table.insert(MailBuddy.subjectPages.pages[2], 5, "MailBuddy_SubjectsPage2CustomSubjectLabel10")
+    mb.subjectPages.pages[2] = {}
+    table.insert(mb.subjectPages.pages[2], 1, "MailBuddy_SubjectsPage2CustomSubjectLabel6")
+    table.insert(mb.subjectPages.pages[2], 2, "MailBuddy_SubjectsPage2CustomSubjectLabel7")
+    table.insert(mb.subjectPages.pages[2], 3, "MailBuddy_SubjectsPage2CustomSubjectLabel8")
+    table.insert(mb.subjectPages.pages[2], 4, "MailBuddy_SubjectsPage2CustomSubjectLabel9")
+    table.insert(mb.subjectPages.pages[2], 5, "MailBuddy_SubjectsPage2CustomSubjectLabel10")
 	--Page 3
-    MailBuddy.subjectPages.pages[3] = {}
-    table.insert(MailBuddy.subjectPages.pages[3], 1, "MailBuddy_SubjectsPage3CustomSubjectLabel11")
-    table.insert(MailBuddy.subjectPages.pages[3], 2, "MailBuddy_SubjectsPage3CustomSubjectLabel12")
-    table.insert(MailBuddy.subjectPages.pages[3], 3, "MailBuddy_SubjectsPage3CustomSubjectLabel13")
-    table.insert(MailBuddy.subjectPages.pages[3], 4, "MailBuddy_SubjectsPage3CustomSubjectLabel14")
-    table.insert(MailBuddy.subjectPages.pages[3], 5, "MailBuddy_SubjectsPage3CustomSubjectLabel15")
+    mb.subjectPages.pages[3] = {}
+    table.insert(mb.subjectPages.pages[3], 1, "MailBuddy_SubjectsPage3CustomSubjectLabel11")
+    table.insert(mb.subjectPages.pages[3], 2, "MailBuddy_SubjectsPage3CustomSubjectLabel12")
+    table.insert(mb.subjectPages.pages[3], 3, "MailBuddy_SubjectsPage3CustomSubjectLabel13")
+    table.insert(mb.subjectPages.pages[3], 4, "MailBuddy_SubjectsPage3CustomSubjectLabel14")
+    table.insert(mb.subjectPages.pages[3], 5, "MailBuddy_SubjectsPage3CustomSubjectLabel15")
 
 	--Variables for the entries on subject pages
-    MailBuddy.subjectPages.entriesPerPage = 5
-    MailBuddy.subjectPages.totalEntries = 15
-    MailBuddy.subjectPages.maxEntriesUntilHere = {}
-    MailBuddy.subjectPages.maxEntriesUntilHere[1] = 5
-    MailBuddy.subjectPages.maxEntriesUntilHere[2] = 10
-    MailBuddy.subjectPages.maxEntriesUntilHere[3] = 15
-    MailBuddy.subjectPages.selectedLabel = "MailBuddy_MailSendSubjectLabelActiveText"
+    mb.subjectPages.entriesPerPage = 5
+    mb.subjectPages.totalEntries = 15
+    mb.subjectPages.maxEntriesUntilHere = {}
+    mb.subjectPages.maxEntriesUntilHere[1] = 5
+    mb.subjectPages.maxEntriesUntilHere[2] = 10
+    mb.subjectPages.maxEntriesUntilHere[3] = 15
+    mb.subjectPages.selectedLabel = "MailBuddy_MailSendSubjectLabelActiveText"
 
 	--Boolean value to check if the keybind was pressed
-    MailBuddy.keybindUsed = false
+    mb.keybindUsed = false
 
 	--Get the current player name
-    MailBuddy.playerName = GetUnitName("player")
+    mb.playerName = GetUnitName("player")
     --get the current account name
-    MailBuddy.accountName = GetDisplayName()
+    mb.accountName = GetDisplayName()
 
     --Maximum characters shown inside the recipients/subjects list (tested with letter W, which is the widest)
-    MailBuddy.maximumCharacters = {
+    mb.maximumCharacters = {
     	["recipients"]	= 14,
         ["subjects"]	= 10,
     }
     --MailBuddy controls
-    MailBuddy.subjectsBox = nil
-    MailBuddy.recipientsBox = nil
-    MailBuddy.editSubject = nil
-    MailBuddy.editRecipient = nil
-    MailBuddy.subjectsLabel = nil
-    MailBuddy.recipientsLabel = nil
-    MailBuddy.mailSendFromLabel = nil
+    mb.subjectsBox = nil
+    mb.recipientsBox = nil
+    mb.editSubject = nil
+    mb.editRecipient = nil
+    mb.subjectsLabel = nil
+    mb.recipientsLabel = nil
+    mb.mailSendFromLabel = nil
 
     --Localization variables
-    MailBuddy.localizationVars = {}
-    MailBuddy.localizationVars.mb_loc 	 	= {}
+    mb.localizationVars = {}
+    mb.localizationVars.mb_loc 	 	= {}
+    mb.localizationVars.all = {} --See file loc/MailBuddyLoc.lua
+    local mailbuddyLoc
 
     --Keybindstrip variables
     local keystripDefCopyFriend         = {}
@@ -157,159 +171,186 @@
     otherAddons.isMailRActive = false
 
     --Localized texts etc.
-    function MailBuddy.Localization()
+    function mb.Localization()
         --Was localization already done during keybindings? Then abort here
-        if MailBuddy.preventerVars.KeyBindingTexts == true and MailBuddy.preventerVars.gLocalizationDone == true then return end
+        local preventerVars = mb.preventerVars
+        if preventerVars.KeyBindingTexts == true and preventerVars.gLocalizationDone == true then return end
 
+        local settingsBase = mb.settingsVars
+        local settingsDef = settingsBase.defaultSettings
+        local settings = settingsBase.settings
         --Fallback to english
-        if (MailBuddy.settingsVars.defaultSettings.language == nil or (MailBuddy.settingsVars.defaultSettings.language ~= 1 and MailBuddy.settingsVars.defaultSettings.language ~= 2 and MailBuddy.settingsVars.defaultSettings.language ~= 3 and MailBuddy.settingsVars.defaultSettings.language ~= 4 and MailBuddy.settingsVars.defaultSettings.language ~= 5)) then
-            MailBuddy.settingsVars.defaultSettings.language = 1
+        if (settingsDef.language == nil or (settingsDef.language ~= 1 and settingsDef.language ~= 2 and settingsDef.language ~= 3 and settingsDef.language ~= 4 and settingsDef.language ~= 5)) then
+            mb.settingsVars.defaultSettings.language = 1
         end
         --Is the standard language english set?
-        if (MailBuddy.preventerVars.KeyBindingTexts == true or (MailBuddy.settingsVars.defaultSettings.language == 1 and MailBuddy.settingsVars.settings.languageChoosen == false)) then
+        if (preventerVars.KeyBindingTexts == true or (settingsDef.language == 1 and settings.languageChoosen == false)) then
             local lang = GetCVar("language.2")
             --Check for supported languages
             if(lang == "de") then
-                MailBuddy.settingsVars.defaultSettings.language = 2
+                mb.settingsVars.defaultSettings.language = 2
             elseif (lang == "en") then
-                MailBuddy.settingsVars.defaultSettings.language = 1
+                mb.settingsVars.defaultSettings.language = 1
             elseif (lang == "fr") then
-                MailBuddy.settingsVars.defaultSettings.language = 3
+                mb.settingsVars.defaultSettings.language = 3
             elseif (lang == "es") then
-                MailBuddy.settingsVars.defaultSettings.language = 4
+                mb.settingsVars.defaultSettings.language = 4
             elseif (lang == "it") then
-                MailBuddy.settingsVars.defaultSettings.language = 5
+                mb.settingsVars.defaultSettings.language = 5
             else
-                MailBuddy.settingsVars.defaultSettings.language = 1
+                mb.settingsVars.defaultSettings.language = 1
             end
         end
-        MailBuddy.localizationVars.mb_loc = {}
-        MailBuddy.localizationVars.mb_loc = mb_loc[MailBuddy.settingsVars.defaultSettings.language]
+        mb.localizationVars.mb_loc = {}
+        mb.localizationVars.mb_loc = mb.localizationVars.all[mb.settingsVars.defaultSettings.language]
+        mailbuddyLoc = mb.localizationVars.mb_loc
 
-        MailBuddy.preventerVars.gLocalizationDone = true
+        mb.preventerVars.gLocalizationDone = true
+
         --Abort here if we only needed the keybinding texts
-        if MailBuddy.preventerVars.KeyBindingTexts == true then return end
+        --if preventerVars.KeyBindingTexts == true then return end
     end
 
     --Global function to get text for the keybindings etc.
-    function MailBuddy.GetLocText(textName, isKeybindingText)
+    function mb.GetLocText(textName, isKeybindingText)
         isKeybindingText = isKeybindingText or false
-        MailBuddy.preventerVars.KeyBindingTexts = isKeybindingText
+        mb.preventerVars.KeyBindingTexts = isKeybindingText
         --Do the localization now
-        MailBuddy.Localization()
-        if textName == nil or MailBuddy.localizationVars.mb_loc == nil or MailBuddy.localizationVars.mb_loc[textName] == nil then return "" end
-        return MailBuddy.localizationVars.mb_loc[textName]
+        mb.Localization()
+        if textName == nil or mailbuddyLoc == nil or mailbuddyLoc[textName] == nil then return "" end
+        return mailbuddyLoc[textName]
     end
 
-
-    function MailBuddy.ShowBox(boxType, doToggleShowHide, doCloseNow, doShowNow, doPlaySound, parentControl, doX, doY)
+    function mb.ShowBox(boxType, doToggleShowHide, doCloseNow, doShowNow, doPlaySound, parentControl, doX, doY)
         if boxType == "" then return end
         doToggleShowHide = doToggleShowHide or false
         doCloseNow = doCloseNow or false
         doShowNow = doShowNow or false
         doPlaySound = doPlaySound or false
+
+        local settings = mb.settingsVars.settings
+
+        --recipients box
         if boxType == "recipients" then
-            if MailBuddy.settingsVars.settings.useAlternativeLayout then
-                parentControl = parentControl or ZO_MailSendSubjectField
+            if settings.useAlternativeLayout then
+                parentControl = parentControl or ZO_MailSendSubject
                 doX = doX or -20
                 doY = doY or -300
-                MailBuddy.recipientsLabel:SetHidden(true)
-                MailBuddy.recipientsLabel:SetMouseEnabled(false)
+                mb.recipientsLabel:SetHidden(true)
+                mb.recipientsLabel:SetMouseEnabled(false)
                 MailBuddy_UseRecipientButton:SetHidden(true)
                 MailBuddy_UseRecipientButton:SetMouseEnabled(false)
-                MailBuddy.recipientsBox:ClearAnchors()
-                MailBuddy.recipientsBox:SetAnchor(TOPRIGHT, parentControl, TOPLEFT, doX, doY)
-                MailBuddy.recipientsBox:SetParent(parentControl)
+                mb.recipientsBox:ClearAnchors()
+                if mb.recipientsBox:GetParent() ~= parentControl then
+                    mb.recipientsBox:SetParent(parentControl)
+                end
+                mb.recipientsBox:SetAnchor(TOPRIGHT, parentControl, TOPLEFT, doX, doY)
+                mb.recipientsBox:SetMouseEnabled(true)
             else
-                parentControl = parentControl or MailBuddy.recipientsLabel
+                parentControl = parentControl or mb.recipientsLabel
                 doX = doX or -15
                 doY = doY or 0
-                MailBuddy.recipientsLabel:SetHidden(false)
-                MailBuddy.recipientsLabel:SetMouseEnabled(true)
+                mb.recipientsLabel:SetHidden(false)
+                mb.recipientsLabel:SetMouseEnabled(true)
                 MailBuddy_UseRecipientButton:SetHidden(false)
                 MailBuddy_UseRecipientButton:SetMouseEnabled(true)
-                MailBuddy.recipientsBox:ClearAnchors()
-                MailBuddy.recipientsBox:SetAnchor(TOPRIGHT, parentControl, TOPLEFT, doX, doY)
-                MailBuddy.recipientsBox:SetParent(parentControl)
+                mb.recipientsBox:ClearAnchors()
+                if mb.recipientsBox:GetParent() ~= parentControl then
+                    mb.recipientsBox:SetParent(parentControl)
+                end
+                mb.recipientsBox:SetAnchor(TOPRIGHT, parentControl, TOPLEFT, doX, doY)
+                mb.recipientsBox:SetMouseEnabled(true)
             end
             if doToggleShowHide then
-                if MailBuddy.recipientsBox:IsHidden() then
-                    MailBuddy.GetZOMailRecipient()
-                    MailBuddy.recipientsBox:SetHidden(false)
-                    MailBuddy.editRecipient:TakeFocus()
-                    if doPlaySound then MailBuddy.PlaySoundNow(SOUNDS["BOOK_OPEN"]) end
+                if mb.recipientsBox:IsHidden() then
+                    mb.GetZOMailRecipient()
+                    mb.recipientsBox:SetHidden(false)
+                    mb.editRecipient:TakeFocus()
+                    mb.recipientsBox:SetMouseEnabled(true)
+                    if doPlaySound then mb.PlaySoundNow(SOUNDS["BOOK_OPEN"]) end
                 else
-                    if  ( (not MailBuddy.settingsVars.settings.useAlternativeLayout and MailBuddy.settingsVars.settings.additional["RecipientsBoxVisibility"])
-                      or  (MailBuddy.settingsVars.settings.useAlternativeLayout) ) then
-                        MailBuddy.recipientsBox:SetHidden(true)
-                        if doPlaySound then MailBuddy.PlaySoundNow(SOUNDS["BOOK_CLOSE"]) end
+                    if  ( (not settings.useAlternativeLayout and settings.additional["RecipientsBoxVisibility"])
+                      or  (settings.useAlternativeLayout) ) then
+
+                        mb.recipientsBox:SetHidden(true)
+                        mb.recipientsBox:SetMouseEnabled(false)
+                        if doPlaySound then mb.PlaySoundNow(SOUNDS["BOOK_CLOSE"]) end
                     end
                 end
             end
             if doCloseNow then
                 ZO_Tooltips_HideTextTooltip()
-                MailBuddy.recipientsBox:SetHidden(true)
-                if doPlaySound then MailBuddy.PlaySoundNow(SOUNDS["BOOK_CLOSE"]) end
+                mb.recipientsBox:SetHidden(true)
+                if doPlaySound then mb.PlaySoundNow(SOUNDS["BOOK_CLOSE"]) end
             elseif doShowNow then
-                MailBuddy.recipientsBox:SetHidden(false)
-                if doPlaySound then MailBuddy.PlaySoundNow(SOUNDS["BOOK_OPEN"]) end
+                mb.recipientsBox:SetHidden(false)
+                if doPlaySound then mb.PlaySoundNow(SOUNDS["BOOK_OPEN"]) end
             end
+
+        --Subjects box
         elseif boxType == "subjects" then
-            if MailBuddy.settingsVars.settings.useAlternativeLayout then
-                parentControl = parentControl or ZO_MailSendSubjectField
+            if settings.useAlternativeLayout then
+                parentControl = parentControl or ZO_MailSendSubject
                 doX = doX or -20
                 doY = doY or 0
                 MailBuddy_MailSendSubjectLabel:SetHidden(true)
                 MailBuddy_MailSendSubjectLabel:SetMouseEnabled(false)
                 MailBuddy_UseSubjectButton:SetHidden(true)
                 MailBuddy_UseSubjectButton:SetMouseEnabled(false)
-                MailBuddy.subjectsBox:ClearAnchors()
-                MailBuddy.subjectsBox:SetAnchor(TOPRIGHT, parentControl, TOPLEFT, doX, doY)
-                MailBuddy.subjectsBox:SetParent(parentControl)
+                mb.subjectsBox:ClearAnchors()
+                if mb.subjectsBox:GetParent() ~= parentControl then
+                    mb.subjectsBox:SetParent(parentControl)
+                end
+                mb.subjectsBox:SetAnchor(TOPRIGHT, parentControl, TOPLEFT, doX, doY)
             else
-                parentControl = parentControl or MailBuddy.subjectsLabel
+                parentControl = parentControl or mb.subjectsLabel
                 doX = doX or 0
                 doY = doY or 10
                 MailBuddy_MailSendSubjectLabel:SetHidden(false)
                 MailBuddy_MailSendSubjectLabel:SetMouseEnabled(true)
                 MailBuddy_UseSubjectButton:SetHidden(false)
                 MailBuddy_UseSubjectButton:SetMouseEnabled(true)
-                MailBuddy.subjectsBox:ClearAnchors()
-                MailBuddy.subjectsBox:SetAnchor(TOP, parentControl, BOTTOM, doX, doY)
-                MailBuddy.subjectsBox:SetParent(parentControl)
+                mb.subjectsBox:ClearAnchors()
+                if mb.subjectsBox:GetParent() ~= parentControl then
+                    mb.subjectsBox:SetParent(parentControl)
+                end
+                mb.subjectsBox:SetAnchor(TOP, parentControl, BOTTOM, doX, doY)
             end
             if doToggleShowHide then
-                if MailBuddy.subjectsBox:IsHidden() then
-                    MailBuddy.GetZOMailSubject()
-                    MailBuddy.subjectsBox:SetHidden(false)
-                    MailBuddy.editSubject:TakeFocus()
-                    if doPlaySound then MailBuddy.PlaySoundNow(SOUNDS["BOOK_OPEN"]) end
+                if mb.subjectsBox:IsHidden() then
+                    mb.GetZOMailSubject()
+                    mb.subjectsBox:SetHidden(false)
+                    mb.editSubject:TakeFocus()
+                    if doPlaySound then mb.PlaySoundNow(SOUNDS["BOOK_OPEN"]) end
                 else
-                    if  ( (not MailBuddy.settingsVars.settings.useAlternativeLayout and MailBuddy.settingsVars.settings.additional["SubjectsBoxVisibility"])
-                      or  (MailBuddy.settingsVars.settings.useAlternativeLayout) ) then
-                        MailBuddy.subjectsBox:SetHidden(true)
-                        if doPlaySound then MailBuddy.PlaySoundNow(SOUNDS["BOOK_CLOSE"]) end
+                    if  ( (not settings.useAlternativeLayout and settings.additional["SubjectsBoxVisibility"])
+                      or  (settings.useAlternativeLayout) ) then
+                        mb.subjectsBox:SetHidden(true)
+                        if doPlaySound then mb.PlaySoundNow(SOUNDS["BOOK_CLOSE"]) end
                     end
                 end
             end
             if doCloseNow then
                 ZO_Tooltips_HideTextTooltip()
-                MailBuddy.subjectsBox:SetHidden(true)
-                if doPlaySound then MailBuddy.PlaySoundNow(SOUNDS["BOOK_CLOSE"]) end
+                mb.subjectsBox:SetHidden(true)
+                if doPlaySound then mb.PlaySoundNow(SOUNDS["BOOK_CLOSE"]) end
             elseif doShowNow then
-                MailBuddy.subjectsBox:SetHidden(false)
-                if doPlaySound then MailBuddy.PlaySoundNow(SOUNDS["BOOK_OPEN"]) end
+                mb.subjectsBox:SetHidden(false)
+                if doPlaySound then mb.PlaySoundNow(SOUNDS["BOOK_OPEN"]) end
             else
             end
         end
+
+--d(string.format("[MailBuddy]ShowBox-type: %s, doToggleShowHide: %s, doCloseNow: %s, doShowNow: %s, doPlaySound: %s, parentControl: %s, doX: %s, doY: %s", tostring(boxType), tostring(doToggleShowHide), tostring(doCloseNow), tostring(doShowNow), tostring(doPlaySound), parentControl:GetName(), tostring(doX), tostring(doY)))
+
     end
 
-    function MailBuddy.UpdateFontAndColor(labelCtrl, updateWhere, fontArea)
+    function mb.UpdateFontAndColor(labelCtrl, updateWhere, fontArea)
         if labelCtrl == nil then return end
         --Get labe control by help of the name
         local labelControl
         if type(labelCtrl) == "string" then
-            labelControl = WINDOW_MANAGER:GetControlByName(labelCtrl, "")
+            labelControl = WM:GetControlByName(labelCtrl, "")
         else
             labelControl = labelCtrl
         end
@@ -319,16 +360,17 @@
         if fontArea ~= 1 and fontArea ~= 2 then return end
         if updateWhere ~= "recipients" and updateWhere ~= "subjects" then return end
         --font for the selected recipient/subject
-        local color = MailBuddy.settingsVars.settings.font[updateWhere][fontArea].color
-        local fontPath = LMP:Fetch('font', MailBuddy.settingsVars.settings.font[updateWhere][fontArea].family)
-        local fontString = string.format('%s|%u|%s', fontPath, MailBuddy.settingsVars.settings.font[updateWhere][fontArea].size, MailBuddy.settingsVars.settings.font[updateWhere][fontArea].style)
+        local font = mb.settingsVars.settings.font[updateWhere][fontArea]
+        local color = font.color
+        local fontPath = LMP:Fetch('font', font.family)
+        local fontString = string.format('%s|%u|%s', fontPath, font.size, font.style)
         --local fontString = "ZoFontGame"
         if fontString  == nil then return end
         labelControl:SetFont(fontString)
         labelControl:SetColor(color.r, color.g, color.b, color.a)
     end
 
-    function MailBuddy.UpdateAllLabels(updateWhere, pageNr, ctrlNr)
+    function mb.UpdateAllLabels(updateWhere, pageNr, ctrlNr)
         updateWhere = updateWhere or "recipients"
         local maxLoop = 0
         local startLoop = 0
@@ -341,12 +383,12 @@
                 maxLoop = pageNr
             end
             for page=startLoop, maxLoop, 1 do
-                for labelNr, recipientName in pairs(MailBuddy.recipientPages.pages[page]) do
-                    if ctrlNr == -1 or ctrlNr == labelnr then
-                        local labelControl = WINDOW_MANAGER:GetControlByName(recipientName, "")
+                for labelNr, recipientName in pairs(mb.recipientPages.pages[page]) do
+                    if ctrlNr == -1 or ctrlNr == labelNr then
+                        local labelControl = WM:GetControlByName(recipientName, "")
                         if labelControl ~= nil then
-                            --Chaneg font etc.
-                            MailBuddy.UpdateFontAndColor(labelControl, updateWhere, 2)
+                            --Change font etc.
+                            mb.UpdateFontAndColor(labelControl, updateWhere, 2)
                         end
                     end
                 end
@@ -361,12 +403,12 @@
                 maxLoop = pageNr
             end
             for page=startLoop, maxLoop, 1 do
-                for labelNr, subjectName in pairs(MailBuddy.subjectPages.pages[page]) do
-                    if ctrlNr == -1 or ctrlNr == labelnr then
-                        local labelControl = WINDOW_MANAGER:GetControlByName(subjectName, "")
+                for labelNr, subjectName in pairs(mb.subjectPages.pages[page]) do
+                    if ctrlNr == -1 or ctrlNr == labelNr then
+                        local labelControl = WM:GetControlByName(subjectName, "")
                         if labelControl ~= nil then
                             --Chaneg font etc.
-                            MailBuddy.UpdateFontAndColor(labelControl, updateWhere, 2)
+                            mb.UpdateFontAndColor(labelControl, updateWhere, 2)
                         end
                     end
                 end
@@ -377,11 +419,11 @@
  	--Clear player/account name from the recipients list, as you are not allowed to send mails to yourself
 	local function RemoveOwnCharactersFromSavedRecipients(index, recipientName)
         if index == nil or recipientName == nil then return false end
-		if recipientName == MailBuddy.playerName or recipientName == MailBuddy.accountName then
+		if recipientName == mb.playerName or recipientName == mb.accountName then
             --One of your characters or your account name was added to teh recipients list
             --> It will be removed now and clearedfrom the SavedVariables at the next reloadui/zone change/logout
-            MailBuddy.settingsVars.settings.SetRecipient[index] = ""
-            MailBuddy.settingsVars.settings.SetRecipientAbbreviated[index] = ""
+            mb.settingsVars.settings.SetRecipient[index] = ""
+            mb.settingsVars.settings.SetRecipientAbbreviated[index] = ""
         	return true
         end
         return false
@@ -391,28 +433,28 @@
     --	LOAD USER SETTINGS
     --=============================================================================================================
     --Load the SavedVariables now
-    function MailBuddy.LoadUserSettings()
-        if not MailBuddy.addonVars.gSettingsLoaded then
+    function mb.LoadUserSettings()
+        if not addonVars.gSettingsLoaded then
             --Prepare the keybindings in the keybindstrip
             keystripDefCopyFriend = {
                 {
-                    name = MailBuddy.GetLocText("SI_BINDING_NAME_MAILBUDDY_FRIEND_COPY", true),
+                    name = mb.GetLocText("SI_BINDING_NAME_MAILBUDDY_FRIEND_COPY", true),
                     keybind = "MAILBUDDY_COPY",
-                    callback = function() MailBuddy.CopyNameUnderControl() end,
+                    callback = function() mb.CopyNameUnderControl() end,
                     alignment = KEYBIND_STRIP_ALIGN_CENTER,
                 }
             }
             keystripDefCopyGuildMember = {
                 {
-                    name = MailBuddy.GetLocText("SI_BINDING_NAME_MAILBUDDY_GUILD_MEMBER_COPY", true),
+                    name = mb.GetLocText("SI_BINDING_NAME_MAILBUDDY_GUILD_MEMBER_COPY", true),
                     keybind = "MAILBUDDY_COPY",
-                    callback = function() MailBuddy.CopyNameUnderControl() end,
+                    callback = function() mb.CopyNameUnderControl() end,
                     alignment = KEYBIND_STRIP_ALIGN_CENTER,
                 }
             }
 
             --The default settings (loaded if no SavedVariables are given)
-            MailBuddy.settingsVars.defaults = {
+            mb.settingsVars.defaults = {
                 curRecipient						= "",
                 curRecipientAbbreviated				= "",
                 curSubject 							= "RETURN",
@@ -535,77 +577,81 @@
                 showCharacterName 		  	= false,
 				showTotalMailCountInInbox	= false,
             }
+            local defaults = mb.settingsVars.defaults
 
             --The default values for the language and save mode
-            MailBuddy.settingsVars.firstRunSettings = {
+            mb.settingsVars.firstRunSettings = {
                 language 	 		    = 1, --Standard: English
-                saveMode     		    = 2, --Standard: Account wide MailBuddy.settingsVars.settings
+                saveMode     		    = 2, --Standard: Account wide mb.settingsVars.settings
             }
+            local firstRunSettings = mb.settingsVars.firstRunSettings
+            local svName = addonVars.savedVariablesName
+            local svVersion = mb.settingsVars.settingsVersion
 
             --=========== BEGIN - SAVED VARIABLES ==========================================
-            --Load the user's MailBuddy.settingsVars.settings from SavedVariables file -> Account wide of basic version 999 at first
-            MailBuddy.settingsVars.defaultSettings = ZO_SavedVars:NewAccountWide(MailBuddy.addonVars.savedVariablesName, 999, "SettingsForAll", MailBuddy.settingsVars.firstRunSettings)
+            --Load the user's mb.settingsVars.settings from SavedVariables file -> Account wide of basic version 999 at first
+            mb.settingsVars.defaultSettings = ZO_SavedVars:NewAccountWide(svName, 999, "SettingsForAll", firstRunSettings)
 
-            --Check, by help of basic version 999 MailBuddy.settingsVars.settings, if the settings should be loaded for each character or account wide
-            --Use the current addon version to read the MailBuddy.settingsVars.settings now
-            if (MailBuddy.settingsVars.defaultSettings.saveMode == 1) then
-                MailBuddy.settingsVars.settings = ZO_SavedVars:New(MailBuddy.addonVars.savedVariablesName, MailBuddy.settingsVars.settingsVersion , "Settings", MailBuddy.settingsVars.defaults)
-            elseif (MailBuddy.settingsVars.defaultSettings.saveMode == 2) then
-                MailBuddy.settingsVars.settings = ZO_SavedVars:NewAccountWide(MailBuddy.addonVars.savedVariablesName, MailBuddy.settingsVars.settingsVersion, "Settings", MailBuddy.settingsVars.defaults)
+            --Check, by help of basic version 999 mb.settingsVars.settings, if the settings should be loaded for each character or account wide
+            --Use the current addon version to read the mb.settingsVars.settings now
+            if (mb.settingsVars.defaultSettings.saveMode == 1) then
+                mb.settingsVars.settings = ZO_SavedVars:New(svName, svVersion, "Settings", defaults)
             else
-                MailBuddy.settingsVars.settings = ZO_SavedVars:NewAccountWide(MailBuddy.addonVars.savedVariablesName, MailBuddy.settingsVars.settingsVersion, "Settings", MailBuddy.settingsVars.defaults)
+                mb.settingsVars.settings = ZO_SavedVars:NewAccountWide(svName, svVersion, "Settings", defaults)
             end
             --=========== END - SAVED VARIABLES ============================================
 
+            local settings = mb.settingsVars.settings
+
             --Read the settings and set the mail recipient names
-            for idx, recipientName in pairs(MailBuddy.settingsVars.settings.SetRecipient) do
+            for idx, recipientName in pairs(settings.SetRecipient) do
                 --d("Recipient name: " .. recipientName .. ", index: " .. idx)
                 if recipientName ~= "" and not RemoveOwnCharactersFromSavedRecipients(idx, recipientName) then
-                    local page, pageEntry = MailBuddy.mapPageAndEntry(idx, "recipient")
+                    local page, pageEntry = mb.mapPageAndEntry(idx, "recipient")
                     if page ~= nil and pageEntry ~= nil then
-                        local editControl = WINDOW_MANAGER:GetControlByName(MailBuddy.recipientPages.pages[page][pageEntry], "")
+                        local editControl = WM:GetControlByName(mb.recipientPages.pages[page][pageEntry], "")
                         if editControl ~= nil then
-                            local recipientNameAbbreviated = MailBuddy.settingsVars.settings.SetRecipientAbbreviated[idx] or recipientName
+                            local recipientNameAbbreviated = settings.SetRecipientAbbreviated[idx] or recipientName
                             editControl:SetText(string.format(recipientNameAbbreviated))
-                            MailBuddy.UpdateEditFieldToolTip(editControl, recipientName, recipientNameAbbreviated)
+                            mb.UpdateEditFieldToolTip(editControl, recipientName, recipientNameAbbreviated)
                         end
                     end
                 end
             end
 
             --Read the settings and set the mail subjects
-            for idx, subjectText in pairs(MailBuddy.settingsVars.settings.SetSubject) do
+            for idx, subjectText in pairs(settings.SetSubject) do
                 if subjectText ~= "" then
-                    local page, pageEntry = MailBuddy.mapPageAndEntry(idx, "subject")
+                    local page, pageEntry = mb.mapPageAndEntry(idx, "subject")
                     if page ~= nil and pageEntry ~= nil then
-                        local subjectEditControl = WINDOW_MANAGER:GetControlByName(MailBuddy.subjectPages.pages[page][pageEntry], "")
+                        local subjectEditControl = WM:GetControlByName(mb.subjectPages.pages[page][pageEntry], "")
                         if subjectEditControl ~= nil then
-                            local subjectTextAbbreviated = MailBuddy.settingsVars.settings.SetSubjectAbbreviated[idx] or subjectText
+                            local subjectTextAbbreviated = settings.SetSubjectAbbreviated[idx] or subjectText
                             subjectEditControl:SetText(string.format(subjectTextAbbreviated))
-                            MailBuddy.UpdateEditFieldToolTip(subjectEditControl, subjectText, subjectTextAbbreviated)
+                            mb.UpdateEditFieldToolTip(subjectEditControl, subjectText, subjectTextAbbreviated)
                         end
                     end
                 end
             end
 
             --Set settings = loaded
-            MailBuddy.addonVars.gSettingsLoaded = true
+            mb.addonVars.gSettingsLoaded = true
         end
         --=============================================================================================================
     end
 
-    local function PlayerActivatedCallback(event)
+    local function PlayerActivatedCallback(eventCode)
 	   -- zo_callLater(MailBuddyGetMail(), 2500)
-	    EVENT_MANAGER:UnregisterForEvent(MailBuddy.addonVars.name, eventCode)
+	    EM:UnregisterForEvent(addonName, eventCode)
 
         --Update the anchors and positions of the recipients and subjects list
-        MailBuddy.ShowBox("recipients", false, false, false, false)
-        MailBuddy.ShowBox("subjects", false, false, false, false)
+        mb.ShowBox("recipients", false, false, false, false)
+        mb.ShowBox("subjects", false, false, false, false)
 
        --Add new recipient and new subject into an edit group and add autocomplete for the recipient name
 	    local editControlGroup = ZO_EditControlGroup:New()
-	    MailBuddy.autoCompleteRecipient = ZO_AutoComplete:New(MailBuddy_MailSendRecipientsBoxEditNewRecipient, { AUTO_COMPLETE_FLAG_ALL }, nil, AUTO_COMPLETION_ONLINE_OR_OFFLINE, MAX_AUTO_COMPLETION_RESULTS)
-        editControlGroup:AddEditControl(MailBuddy_MailSendRecipientsBoxEditNewRecipient, MailBuddy.autoCompleteRecipient)
+	    mb.autoCompleteRecipient = ZO_AutoComplete:New(MailBuddy_MailSendRecipientsBoxEditNewRecipient, { AUTO_COMPLETE_FLAG_ALL }, nil, AUTO_COMPLETION_ONLINE_OR_OFFLINE, MAX_AUTO_COMPLETION_RESULTS)
+        editControlGroup:AddEditControl(MailBuddy_MailSendRecipientsBoxEditNewRecipient, mb.autoCompleteRecipient)
         editControlGroup:AddEditControl(MailBuddy_MailSendSubjectsBoxEditNewSubject, nil)
 	end
 
@@ -613,18 +659,19 @@
     local function AddButtonToFriendsList()
 		if ZO_KeyboardFriendsList ~= nil and not ZO_KeyboardFriendsList:IsHidden() then
             --Automatically hide the recipients box?
-            local doHide = MailBuddy.settingsVars.settings.automatism.hide["RecipientsBox"]
-            local doOpen = MailBuddy.settingsVars.settings.lastShown.recipients["FriendsList"]
+            local settings = mb.settingsVars.settings
+            local doHide = settings.automatism.hide["RecipientsBox"]
+            local doOpen = settings.lastShown.recipients["FriendsList"]
             if doOpen == false then
                 doHide = true
             end
-            MailBuddy.ShowBox("recipients", false, doHide, doOpen, false, ZO_KeyboardFriendsList, -16, 0)
+            mb.ShowBox("recipients", false, doHide, doOpen, false, ZO_KeyboardFriendsList, -16, 0)
 
 			--Add a button to the friends list, at top left corner near the "online status icon" to show/hide MailBuddy
 	        if ZO_DisplayNameStatusSelectedItem ~= nil then
 	        	if MailBuddy_FriendsToggleButton == nil then
 					--Create the button control at the parent
-					local button = WINDOW_MANAGER:CreateControl("MailBuddy_FriendsToggleButton", ZO_KeyboardFriendsList, CT_BUTTON)
+					local button = WM:CreateControl("MailBuddy_FriendsToggleButton", ZO_KeyboardFriendsList, CT_BUTTON)
 	                if button ~= nil then
 				        --Set the button's size
 					    button:SetDimensions(24, 24)
@@ -634,7 +681,7 @@
 			        	--Texture
 						local texture
 					    --Create the texture for the button to hold the image
-					    texture = WINDOW_MANAGER:CreateControl("MailBuddy_FriendsToggleButtonTexture", button, CT_TEXTURE)
+					    texture = WM:CreateControl("MailBuddy_FriendsToggleButtonTexture", button, CT_TEXTURE)
 					    texture:SetAnchorFill()
 				        --Set the texture for normale state now
 				        texture:SetTexture("EsoUI/Art/Inventory/inventory_tabIcon_quickslot_up.dds")
@@ -647,7 +694,7 @@
 						button:SetPressedMouseOverTexture(button.clickedTexture)
 						button:SetHandler("OnMouseEnter", function(self)
 	                    	local mailBuddyToggleButtonTooltip
-	                        if MailBuddy.recipientsBox:IsHidden() then
+	                        if mb.recipientsBox:IsHidden() then
 	                        	mailBuddyToggleButtonTooltip = "Show MailBuddy"
 	                        else
 		                        mailBuddyToggleButtonTooltip = "Hide MailBuddy"
@@ -660,7 +707,7 @@
 						--Set the callback function of the button
 					    button:SetHandler("OnClicked", function(...)
 	                        ZO_Tooltips_HideTextTooltip()
-                            MailBuddy.ShowBox("recipients", true, false, false, true, ZO_KeyboardFriendsList, -16, 0)
+                            mb.ShowBox("recipients", true, false, false, true, ZO_KeyboardFriendsList, -16, 0)
 				        end)
 	                    button:SetHidden(false)
 	                end
@@ -673,18 +720,19 @@
     local function AddButtonToGuildRoster()
         if ZO_GuildRoster ~= nil and not ZO_GuildRoster:IsHidden() then
             --Automatically hide the recipients box?
-            local doHide = MailBuddy.settingsVars.settings.automatism.hide["RecipientsBox"]
-            local doOpen = MailBuddy.settingsVars.settings.lastShown.recipients["GuildRoster"]
+            local settings = mb.settingsVars.settings
+            local doHide = settings.automatism.hide["RecipientsBox"]
+            local doOpen = settings.lastShown.recipients["GuildRoster"]
             if doOpen == false then
                 doHide = true
             end
-            MailBuddy.ShowBox("recipients", false, doHide, doOpen, false, ZO_GuildRoster, -16, 0)
+            mb.ShowBox("recipients", false, doHide, doOpen, false, ZO_GuildRoster, -16, 0)
 
             --Add a button to the guild roster, at top left corner near the "online status icon" to show/hide MailBuddy
             if ZO_DisplayNameStatusSelectedItem ~= nil then
                 if MailBuddy_GuildRosterToggleButton == nil then
                     --Create the button control at the parent
-                    local button = WINDOW_MANAGER:CreateControl("MailBuddy_GuildRosterToggleButton", ZO_GuildRoster, CT_BUTTON)
+                    local button = WM:CreateControl("MailBuddy_GuildRosterToggleButton", ZO_GuildRoster, CT_BUTTON)
                     if button ~= nil then
                         --Set the button's size
                         button:SetDimensions(24, 24)
@@ -694,7 +742,7 @@
                         --Texture
                         local texture
                         --Create the texture for the button to hold the image
-                        texture = WINDOW_MANAGER:CreateControl("MailBuddy_GuildRosterToggleButtonTexture", button, CT_TEXTURE)
+                        texture = WM:CreateControl("MailBuddy_GuildRosterToggleButtonTexture", button, CT_TEXTURE)
                         texture:SetAnchorFill()
                         --Set the texture for normale state now
                         texture:SetTexture("EsoUI/Art/Inventory/inventory_tabIcon_quickslot_up.dds")
@@ -707,7 +755,7 @@
                         button:SetPressedMouseOverTexture(button.clickedTexture)
                         button:SetHandler("OnMouseEnter", function(self)
                             local mailBuddyToggleButtonTooltip
-                            if MailBuddy.recipientsBox:IsHidden() then
+                            if mb.recipientsBox:IsHidden() then
                                 mailBuddyToggleButtonTooltip = "Show MailBuddy"
                             else
                                 mailBuddyToggleButtonTooltip = "Hide MailBuddy"
@@ -720,7 +768,7 @@
                         --Set the callback function of the button
                         button:SetHandler("OnClicked", function(...)
                             ZO_Tooltips_HideTextTooltip()
-                            MailBuddy.ShowBox("recipients", true, false, false, true, ZO_GuildRoster, -16, 0)
+                            mb.ShowBox("recipients", true, false, false, true, ZO_GuildRoster, -16, 0)
                         end)
                         button:SetHidden(false)
                     end
@@ -729,61 +777,70 @@
         end
 	end
 
-    function MailBuddy.PlaySoundNow(soundName, itemSoundCategory, itemSoundAction)
+    function mb.PlaySoundNow(soundName, itemSoundCategory, itemSoundAction)
         --Only play sounds if enabled ins ettings
-        if MailBuddy.settingsVars.settings.playSounds == false then return end
-        if (soundName == nil or soundName == "") and
+        if mb.settingsVars.settings.playSounds == false then return end
+        if soundName == nil or soundName == "" and
             ((itemSoundCategory == nil or itemSoundCategory == "") or
              (itemSoundAction == nil or itemSoundAction == "")) then return end
 
         if soundName ~= nil and soundName ~= "" then
             PlaySound(soundName)
         else
-            if (itemSoundCategory ~= nil and itemSoundAction ~= nil) then
+            if itemSoundCategory ~= nil and itemSoundAction ~= nil then
                 PlayItemSound(itemSoundCategory, itemSoundAction)
             end
         end
     end
 
-	function MailBuddy.CopyNameUnderControl()
-		local mouseOverControl = WINDOW_MANAGER:GetMouseOverControl()
-		if (mouseOverControl:GetName():find("^ZO_KeyboardFriendsListList1Row%d+DisplayName*" or "^ZO_KeyboardFriendsListList1Row%d%d+DisplayName*" )) then
-			MailBuddy.editRecipient:SetText(string.format(mouseOverControl:GetText()))
-		elseif (mouseOverControl:GetName():find("^ZO_GuildRosterList1Row%d+DisplayName*" or "^ZO_GuildRosterList1Row%d%d+DisplayName*" )) then
-			MailBuddy.editRecipient:SetText(string.format(mouseOverControl:GetText()))
-		end
-	end
+	function mb.CopyNameUnderControl()
+        local mouseOverControl = moc()
+        if not mouseOverControl then return end
+        local mocName = mouseOverControl:GetName()
 
-    function MailBuddy.GetZOMailRecipient(doOverride)
+        for _, findMeStr in ipairs(guildRosterAndFriendsListRowPatterns) do
+            if mocName:find(findMeStr) then
+                mb.editRecipient:SetText(mouseOverControl:GetText())
+                return true
+            end
+        end
+        return false
+    end
+
+    function mb.GetZOMailRecipient(doOverride)
         doOverride = doOverride or false
 
-        if not doOverride and MailBuddy.editRecipient:GetText() ~= "" then return "" end
-        local GetTo = ZO_MailSendToField:GetText()
-        if (GetTo ~= "") then
-            if not doOverride then MailBuddy.editRecipient:SetText(GetTo)
-            else return GetTo end
+        local editRecipient = mb.editRecipient
+--d("[MailBuddy]GetZOMailRecipient: " ..tostring(editRecipient:GetText()))
+        if not doOverride and editRecipient:GetText() ~= "" then return "" end
+        local getTo = ZO_MailSendToField:GetText()
+        if getTo ~= "" then
+            if not doOverride then editRecipient:SetText(getTo)
+            else return getTo end
         else return "" end
     end
 
-    function MailBuddy.GetZOMailSubject(doOverride)
+    function mb.GetZOMailSubject(doOverride)
         doOverride = doOverride or false
-
-        if not doOverride and MailBuddy.editSubject:GetText() ~= "" then return "" end
-        local GetSubject = ZO_MailSendSubjectField:GetText()
-        if (GetSubject ~= "") then
-            if not doOverride then MailBuddy.editSubject:SetText(GetSubject)
-            else return GetSubject end
+        local editSubject = mb.editSubject
+--d("[MailBuddy]GetZOMailSubject: " ..tostring(editSubject:GetText()))
+        if not doOverride and editSubject:GetText() ~= "" then return "" end
+        local getSubject = ZO_MailSendSubjectField:GetText()
+        if getSubject ~= "" then
+            if not doOverride then editSubject:SetText(getSubject)
+            else return getSubject end
         else return "" end
     end
 
-    function MailBuddy.GetZOMailBody()
-        local GetBody = ZO_MailSendBodyField:GetText()
-        return GetBody
+    function mb.GetZOMailBody()
+        local getBody = ZO_MailSendBodyField:GetText()
+--d("[MailBuddy]GetZOMailBody: " ..tostring(getBody))
+        return getBody
     end
 
 	local function GetMouseOverFriends(mouseOverControl)
-		if (not ZO_KeyboardFriendsList:IsHidden()) then
-				KEYBIND_STRIP:AddKeybindButtonGroup(keystripDefCopyFriend)
+		if not ZO_KeyboardFriendsList:IsHidden() then
+            KEYBIND_STRIP:AddKeybindButtonGroup(keystripDefCopyFriend)
 		else
 			KEYBIND_STRIP:RemoveKeybindButtonGroup(keystripDefCopyFriend)
             KEYBIND_STRIP:RemoveKeybindButtonGroup(keystripDefCopyGuildMember)
@@ -791,7 +848,7 @@
 	end
 
 	local function GetMouseOverGuildMembers(mouseOverControl)
-		if (not ZO_GuildRoster:IsHidden()) then
+		if not ZO_GuildRoster:IsHidden() then
             KEYBIND_STRIP:AddKeybindButtonGroup(keystripDefCopyGuildMember)
 		else
             KEYBIND_STRIP:RemoveKeybindButtonGroup(keystripDefCopyFriend)
@@ -801,55 +858,67 @@
 
     --Set the Mail-Brain "last used" mail recipient and subject for new mails
     local function SetRememberedRecipientSubjectAndBody()
-        if MailBuddy.settingsVars.settings.remember.recipient["last"] and ZO_MailSendToField ~= nil and MailBuddy.settingsVars.settings.remember.recipient["text"] ~= nil and MailBuddy.settingsVars.settings.remember.recipient["text"] ~= "" then
-            if not MailBuddy.preventerVars.dontUseLastRecipientName and ZO_MailSendToField:GetText() == "" then
-                ZO_MailSendToField:SetText(string.format(MailBuddy.settingsVars.settings.remember.recipient["text"]))
+--d("[MailBuddy]SetRememberedRecipientSubjectAndBody")
+        local settingsRemember = mb.settingsVars.settings.remember
+        if settingsRemember.recipient["last"] and ZO_MailSendToField ~= nil and settingsRemember.recipient["text"] ~= nil and settingsRemember.recipient["text"] ~= "" then
+--d(">1")
+            if not mb.preventerVars.dontUseLastRecipientName and ZO_MailSendToField:GetText() == "" then
+--d(">2")
+                ZO_MailSendToField:SetText(settingsRemember.recipient["text"])
             end
         end
-        if MailBuddy.settingsVars.settings.remember.subject["last"] and ZO_MailSendSubjectField ~= nil and MailBuddy.settingsVars.settings.remember.subject["text"] ~= nil and MailBuddy.settingsVars.settings.remember.subject["text"] ~= "" then
+        if settingsRemember.subject["last"] and ZO_MailSendSubjectField ~= nil and settingsRemember.subject["text"] ~= nil and settingsRemember.subject["text"] ~= "" then
+--d(">3")
             zo_callLater(function()
-                ZO_MailSendSubjectField:SetText(string.format(MailBuddy.settingsVars.settings.remember.subject["text"]))
+--d(">4")
+                ZO_MailSendSubjectField:SetText(settingsRemember.subject["text"])
             end, 50)
         end
-        if MailBuddy.settingsVars.settings.remember.body["last"] and ZO_MailSendBodyField ~= nil and MailBuddy.settingsVars.settings.remember.body["text"] ~= nil and MailBuddy.settingsVars.settings.remember.body["text"] ~= "" then
-            ZO_MailSendBodyField:SetText(string.format(MailBuddy.settingsVars.settings.remember.body["text"]))
+        if settingsRemember.body["last"] and ZO_MailSendBodyField ~= nil and settingsRemember.body["text"] ~= nil and settingsRemember.body["text"] ~= "" then
+--d(">5")
+            ZO_MailSendBodyField:SetText(settingsRemember.body["text"])
         end
     end
 
     --Set the standard mail recipient and subject for new mails
 	local function SetStandardRecipientAndSubject()
-    	if not MailBuddy.settingsVars.settings.remember.recipient["last"] and ZO_MailSendToField ~= nil and MailBuddy.settingsVars.settings.standard["To"] ~= nil and MailBuddy.settingsVars.settings.standard["To"] ~= "" then
-            ZO_MailSendToField:SetText(MailBuddy.settingsVars.settings.standard["To"])
+        local settings = mb.settingsVars.settings
+        local settingsRemember = settings.remember
+    	if not settingsRemember.recipient["last"] and ZO_MailSendToField ~= nil and settings.standard["To"] ~= nil and settings.standard["To"] ~= "" then
+            ZO_MailSendToField:SetText(settings.standard["To"])
 	    end
-	 	if not MailBuddy.settingsVars.settings.remember.subject["last"] and ZO_MailSendSubjectField ~= nil and MailBuddy.settingsVars.settings.standard["Subject"] ~= nil and MailBuddy.settingsVars.settings.standard["Subject"] ~= "" then
-            ZO_MailSendSubjectField:SetText(MailBuddy.settingsVars.settings.standard["Subject"])
+	 	if not settingsRemember.subject["last"] and ZO_MailSendSubjectField ~= nil and settings.standard["Subject"] ~= nil and settings.standard["Subject"] ~= "" then
+            ZO_MailSendSubjectField:SetText(settings.standard["Subject"])
         end
 	end
 
 --------------------------------------------------------------------------------
 	--Create the options panel with LAM 2.0
     --BuildAddonMenu
-	function MailBuddy.CreateLAMPanel()
+	function mb.CreateLAMPanel()
 		local panelData = {
 			type 				= 'panel',
-			name 				= MailBuddy.addonVars.name,
-			displayName 		= MailBuddy.addonVars.displayName,
-			author 				= MailBuddy.addonVars.author,
-			version 			= MailBuddy.addonVars.version,
+			name 				= addonName,
+			displayName 		= addonVars.displayName,
+			author 				= addonVars.author,
+			version 			= addonVars.version,
 			registerForRefresh 	= true,
 			registerForDefaults = true,
 			slashCommand 		= "/mbs",
 		}
-		MailBuddy.SettingsPanel = LAM:RegisterAddonPanel(MailBuddy.addonVars.name.."panel", panelData)
+		mb.SettingsPanel = LAM:RegisterAddonPanel(addonName.."panel", panelData)
+
+        local settingsAtLAM = mb.settingsVars.settings
+        local settingsAtLAMDefaults = mb.settingsVars.defaults
 
     --[[ Try to add auto complete to LAM 2.o edit box but it doesn't work. Maybe the inherits="ZO_DefaultEditForBackdrop" is relevant?
         local UpdateMailBuddySettingsFields = function(panel)
-			if panel == MailBuddy.SettingsPanel then
+			if panel == mb.SettingsPanel then
 		        --Update the standard recipient name edit field with an auto complete feature
 				if MailBuddy_StandardRecipientName_SettingsEdit ~= nil then
 				    local editControlGroup = ZO_EditControlGroup:New()
-				    MailBuddy.autoCompleteRecipientSettings = ZO_AutoComplete:New(MailBuddy_StandardRecipientName_SettingsEdit, { AUTO_COMPLETE_FLAG_ALL }, nil, AUTO_COMPLETION_ONLINE_OR_OFFLINE, MAX_AUTO_COMPLETION_RESULTS)
-			        editControlGroup:AddEditControl(MailBuddy_StandardRecipientName_SettingsEdit, MailBuddy.autoCompleteRecipientSettings)
+				    mb.autoCompleteRecipientSettings = ZO_AutoComplete:New(MailBuddy_StandardRecipientName_SettingsEdit, { AUTO_COMPLETE_FLAG_ALL }, nil, AUTO_COMPLETION_ONLINE_OR_OFFLINE, MAX_AUTO_COMPLETION_RESULTS)
+			        editControlGroup:AddEditControl(MailBuddy_StandardRecipientName_SettingsEdit, mb.autoCompleteRecipientSettings)
 		        end
 				CALLBACK_MANAGER:UnregisterCallback("LAM-RefreshPanel", UpdateMailBuddySettingsFields)
 			end
@@ -863,555 +932,585 @@
         local previewLabel3
         local previewLabel4
         local fontPreview = function(panel)
-            if panel == MailBuddy.SettingsPanel then
-                previewLabel1 = WINDOW_MANAGER:CreateControl(nil, panel.controlsToRefresh[10], CT_LABEL)
+            if panel == mb.SettingsPanel then
+                previewLabel1 = WM:CreateControl(nil, panel.controlsToRefresh[10], CT_LABEL)
                 previewLabel1:SetAnchor(RIGHT, panel.controlsToRefresh[10].dropdown:GetControl(), LEFT, -10, 0)
                 previewLabel1:SetText("@Accountname")
                 previewLabel1:SetHidden(false)
-                MailBuddy.UpdateFontAndColor(previewLabel1, "recipients", 1)
+                mb.UpdateFontAndColor(previewLabel1, "recipients", 1)
 
-                previewLabel2 = WINDOW_MANAGER:CreateControl(nil, panel.controlsToRefresh[14], CT_LABEL)
+                previewLabel2 = WM:CreateControl(nil, panel.controlsToRefresh[14], CT_LABEL)
                 previewLabel2:SetAnchor(RIGHT, panel.controlsToRefresh[14].dropdown:GetControl(), LEFT, -10, 0)
                 previewLabel2:SetText("Character name")
                 previewLabel2:SetHidden(false)
-                MailBuddy.UpdateFontAndColor(previewLabel2, "recipients", 2)
+                mb.UpdateFontAndColor(previewLabel2, "recipients", 2)
 
-                previewLabel3 = WINDOW_MANAGER:CreateControl(nil, panel.controlsToRefresh[18], CT_LABEL)
+                previewLabel3 = WM:CreateControl(nil, panel.controlsToRefresh[18], CT_LABEL)
                 previewLabel3:SetAnchor(RIGHT, panel.controlsToRefresh[18].dropdown:GetControl(), LEFT, -10, 0)
                 previewLabel3:SetText("SUBJECT")
                 previewLabel3:SetHidden(false)
-                MailBuddy.UpdateFontAndColor(previewLabel3, "subjects", 1)
+                mb.UpdateFontAndColor(previewLabel3, "subjects", 1)
 
-                previewLabel4 = WINDOW_MANAGER:CreateControl(nil, panel.controlsToRefresh[22], CT_LABEL)
+                previewLabel4 = WM:CreateControl(nil, panel.controlsToRefresh[22], CT_LABEL)
                 previewLabel4:SetAnchor(RIGHT, panel.controlsToRefresh[22].dropdown:GetControl(), LEFT, -10, 0)
                 previewLabel4:SetText("Subject")
                 previewLabel4:SetHidden(false)
-                MailBuddy.UpdateFontAndColor(previewLabel4, "subjects", 4)
+                mb.UpdateFontAndColor(previewLabel4, "subjects", 4)
                 CALLBACK_MANAGER:UnregisterCallback("LAM-RefreshPanel", fontPreview)
             end
         end
         CALLBACK_MANAGER:RegisterCallback("LAM-PanelControlsCreated", fontPreview)
 
         local languageOptions = {
-            [1] = MailBuddy.localizationVars.mb_loc["options_language_dropdown_selection1"],
-            [2] = MailBuddy.localizationVars.mb_loc["options_language_dropdown_selection2"],
-            [3] = MailBuddy.localizationVars.mb_loc["options_language_dropdown_selection3"],
-            [4] = MailBuddy.localizationVars.mb_loc["options_language_dropdown_selection4"],
-            [5] = MailBuddy.localizationVars.mb_loc["options_language_dropdown_selection5"],
+            [1] = mailbuddyLoc["options_language_dropdown_selection1"],
+            [2] = mailbuddyLoc["options_language_dropdown_selection2"],
+            [3] = mailbuddyLoc["options_language_dropdown_selection3"],
+            [4] = mailbuddyLoc["options_language_dropdown_selection4"],
+            [5] = mailbuddyLoc["options_language_dropdown_selection5"],
+        }
+        local languageOptionsValues = {
+            [1] = 1,
+            [2] = 2,
+            [3] = 3,
+            [4] = 4,
+            [5] = 5,
         }
 
         local savedVariablesOptions = {
-            [1] = MailBuddy.localizationVars.mb_loc["options_savedVariables_dropdown_selection1"],
-            [2] = MailBuddy.localizationVars.mb_loc["options_savedVariables_dropdown_selection2"],
+            [1] = mailbuddyLoc["options_savedVariables_dropdown_selection1"],
+            [2] = mailbuddyLoc["options_savedVariables_dropdown_selection2"],
+        }
+        local savedVariablesOptionsValues = {
+            [1] = 1,
+            [2] = 2,
         }
 
 		local optionsTable =
 	    {	-- BEGIN OF OPTIONS TABLE
 			{
 				type = 'description',
-				text = MailBuddy.localizationVars.mb_loc["options_description"],
+				text = mailbuddyLoc["options_description"],
 			},
 	--==============================================================================
             {
                 type = 'header',
-                name = MailBuddy.localizationVars.mb_loc["options_header1"],
+                name = mailbuddyLoc["options_header1"],
             },
             {
                 type = 'dropdown',
-                name = MailBuddy.localizationVars.mb_loc["options_language"],
-                tooltip = MailBuddy.localizationVars.mb_loc["options_language_tooltip"],
+                name = mailbuddyLoc["options_language"],
+                tooltip = mailbuddyLoc["options_language_tooltip"],
                 choices = languageOptions,
-                getFunc = function() return languageOptions[MailBuddy.settingsVars.defaultSettings.language] end,
+                choicesValues = languageOptionsValues,
+                --[[
+                getFunc = function() return languageOptions[mb.settingsVars.defaultSettings.language] end,
                 setFunc = function(value)
                     for i,v in pairs(languageOptions) do
                         if v == value then
-                            MailBuddy.settingsVars.defaultSettings.language = i
+                            mb.settingsVars.defaultSettings.language = i
                             --Tell the settings that you have manually chosen the language and want to keep it
-                            --Read in function MailBuddy.Localization() after ReloadUI()
-                            MailBuddy.settingsVars.settings.languageChoosen = true
+                            --Read in function mb.Localization() after ReloadUI()
+                            settingsAtLAM.languageChoosen = true
                             ReloadUI()
                         end
                     end
                 end,
-                warning = MailBuddy.localizationVars.mb_loc["options_language_description1"],
+                ]]
+                getFunc = function() return mb.settingsVars.defaultSettings.language end,
+                setFunc = function(value)
+                    mb.settingsVars.defaultSettings.language = value
+                    settingsAtLAM.languageChoosen = true
+                    ReloadUI()
+                end,
+                warning = mailbuddyLoc["options_language_description1"],
             },
             {
                 type = 'dropdown',
-                name = MailBuddy.localizationVars.mb_loc["options_savedvariables"],
-                tooltip = MailBuddy.localizationVars.mb_loc["options_savedvariables_tooltip"],
+                name = mailbuddyLoc["options_savedvariables"],
+                tooltip = mailbuddyLoc["options_savedvariables_tooltip"],
                 choices = savedVariablesOptions,
-                getFunc = function() return savedVariablesOptions[MailBuddy.settingsVars.defaultSettings.saveMode] end,
+                choicesValues = savedVariablesOptionsValues,
+                --[[
+                getFunc = function() return savedVariablesOptions[mb.settingsVars.defaultSettings.saveMode] end,
                 setFunc = function(value)
                     for i,v in pairs(savedVariablesOptions) do
                         if v == value then
-                            MailBuddy.settingsVars.defaultSettings.saveMode = i
+                            mb.settingsVars.defaultSettings.saveMode = i
                             ReloadUI()
                         end
                     end
                 end,
-                warning = MailBuddy.localizationVars.mb_loc["options_language_description1"],
+                ]]
+                getFunc = function() return mb.settingsVars.defaultSettings.saveMode end,
+                setFunc = function(value)
+                    mb.settingsVars.defaultSettings.saveMode = value
+                    ReloadUI()
+                end,
+                warning = mailbuddyLoc["options_language_description1"],
             },
 			{
 	        	type = 'header',
-	        	name = MailBuddy.localizationVars.mb_loc["options_appearance"],
+	        	name = mailbuddyLoc["options_appearance"],
 	        },
             {
 				type = "checkbox",
-				name = MailBuddy.localizationVars.mb_loc["options_alternative_layout"],
-				tooltip = MailBuddy.localizationVars.mb_loc["options_alternative_layout_tooltip"],
-				getFunc = function() return MailBuddy.settingsVars.settings.useAlternativeLayout end,
+				name = mailbuddyLoc["options_alternative_layout"],
+				tooltip = mailbuddyLoc["options_alternative_layout_tooltip"],
+				getFunc = function() return settingsAtLAM.useAlternativeLayout end,
 				setFunc = function(value)
-                	MailBuddy.settingsVars.settings.useAlternativeLayout = not MailBuddy.settingsVars.settings.useAlternativeLayout
-                    MailBuddy.ShowBox("recipients", false, false, false, false)
-                    MailBuddy.ShowBox("subjects", false, false, false, false)
-                    MailBuddy.settingsVars.settings.showAlternativeLayoutTooltip = MailBuddy.settingsVars.settings.useAlternativeLayout
+                	settingsAtLAM.useAlternativeLayout = value
+                    mb.ShowBox("recipients", false, false, false, false)
+                    mb.ShowBox("subjects", false, false, false, false)
+                    settingsAtLAM.showAlternativeLayoutTooltip = settingsAtLAM.useAlternativeLayout
                 end,
-	            default = MailBuddy.settingsVars.settings.useAlternativeLayout,
+	            default = settingsAtLAMDefaults.useAlternativeLayout,
 	            width   = "full",
 			},
             {
                 type = "checkbox",
-                name = MailBuddy.localizationVars.mb_loc["options_show_alternative_layout_tooltip"],
-                tooltip = MailBuddy.localizationVars.mb_loc["options_show_alternative_layout_tooltip_tooltip"],
-                getFunc = function() return MailBuddy.settingsVars.settings.showAlternativeLayoutTooltip end,
+                name = mailbuddyLoc["options_show_alternative_layout_tooltip"],
+                tooltip = mailbuddyLoc["options_show_alternative_layout_tooltip_tooltip"],
+                getFunc = function() return settingsAtLAM.showAlternativeLayoutTooltip end,
                 setFunc = function(value)
-                    MailBuddy.settingsVars.settings.showAlternativeLayoutTooltip = not MailBuddy.settingsVars.settings.showAlternativeLayoutTooltip
+                    settingsAtLAM.showAlternativeLayoutTooltip = value
                 end,
-                default = MailBuddy.settingsVars.settings.showAlternativeLayoutTooltip,
+                default = settingsAtLAMDefaults.showAlternativeLayoutTooltip,
                 width   = "full",
-                disabled = function() return not MailBuddy.settingsVars.settings.useAlternativeLayout end
+                disabled = function() return not settingsAtLAM.useAlternativeLayout end
             },
             {
                 type = "checkbox",
-                name = MailBuddy.localizationVars.mb_loc["options_play_sounds"],
-                tooltip = MailBuddy.localizationVars.mb_loc["options_play_sounds_tooltip"],
-                getFunc = function() return MailBuddy.settingsVars.settings.playSounds end,
+                name = mailbuddyLoc["options_play_sounds"],
+                tooltip = mailbuddyLoc["options_play_sounds_tooltip"],
+                getFunc = function() return settingsAtLAM.playSounds end,
                 setFunc = function(value)
-                    MailBuddy.settingsVars.settings.playSounds = not MailBuddy.settingsVars.settings.playSounds
+                    settingsAtLAM.playSounds = value
                 end,
-                default = MailBuddy.settingsVars.settings.playSounds,
+                default = settingsAtLAMDefaults.playSounds,
                 width   = "full",
             },
 
             {
                 type = 'header',
-                name = MailBuddy.localizationVars.mb_loc["options_fonts"],
+                name = mailbuddyLoc["options_fonts"],
             },
             {
                 type = 'dropdown',
-                name = MailBuddy.localizationVars.mb_loc["options_font_recipient_label"],
+                name = mailbuddyLoc["options_font_recipient_label"],
                 choices = LMP:List('font'),
-                getFunc = function() return MailBuddy.settingsVars.settings.font["recipients"][1].family end,
-                setFunc = function(value) MailBuddy.settingsVars.settings.font["recipients"][1].family = value
-                    MailBuddy.UpdateFontAndColor(previewLabel1, "recipients", 1)
-                    MailBuddy.UpdateFontAndColor(MailBuddy.recipientPages.selectedLabel, "recipients", 1)
+                getFunc = function() return settingsAtLAM.font["recipients"][1].family end,
+                setFunc = function(value) settingsAtLAM.font["recipients"][1].family = value
+                    mb.UpdateFontAndColor(previewLabel1, "recipients", 1)
+                    mb.UpdateFontAndColor(mb.recipientPages.selectedLabel, "recipients", 1)
                 end,
-                default = MailBuddy.settingsVars.settings.font["recipients"][1].family,
+                default = settingsAtLAMDefaults.font["recipients"][1].family,
             },
             {
                 type = "slider",
-                name = MailBuddy.localizationVars.mb_loc["options_font_recipient_label_size"],
+                name = mailbuddyLoc["options_font_recipient_label_size"],
                 min = 8,
                 max = 32,
-                getFunc = function() return MailBuddy.settingsVars.settings.font["recipients"][1].size end,
-                setFunc = function(size) MailBuddy.settingsVars.settings.font["recipients"][1].size = size
-                    MailBuddy.UpdateFontAndColor(previewLabel1, "recipients", 1)
-                    MailBuddy.UpdateFontAndColor(MailBuddy.recipientPages.selectedLabel, "recipients", 1)
+                getFunc = function() return settingsAtLAM.font["recipients"][1].size end,
+                setFunc = function(size) settingsAtLAM.font["recipients"][1].size = size
+                    mb.UpdateFontAndColor(previewLabel1, "recipients", 1)
+                    mb.UpdateFontAndColor(mb.recipientPages.selectedLabel, "recipients", 1)
                 end,
-                default = MailBuddy.settingsVars.settings.font["recipients"][1].size,
+                default = settingsAtLAMDefaults.font["recipients"][1].size,
             },
             {
                 type = 'dropdown',
-                name = MailBuddy.localizationVars.mb_loc["options_font_recipient_label_style"],
-                choices = MailBuddy.settingsVars.fontStyles,
-                getFunc = function() return MailBuddy.settingsVars.settings.font["recipients"][1].style end,
-                setFunc = function(value) MailBuddy.settingsVars.settings.font["recipients"][1].style = value
-                    MailBuddy.UpdateFontAndColor(previewLabel1, "recipients", 1)
-                    MailBuddy.UpdateFontAndColor(MailBuddy.recipientPages.selectedLabel, "recipients", 1)
+                name = mailbuddyLoc["options_font_recipient_label_style"],
+                choices = mb.settingsVars.fontStyles,
+                getFunc = function() return settingsAtLAM.font["recipients"][1].style end,
+                setFunc = function(value) settingsAtLAM.font["recipients"][1].style = value
+                    mb.UpdateFontAndColor(previewLabel1, "recipients", 1)
+                    mb.UpdateFontAndColor(mb.recipientPages.selectedLabel, "recipients", 1)
                 end,
                 width = "half",
-                default = MailBuddy.settingsVars.settings.font["recipients"][1].style,
+                default = settingsAtLAMDefaults.font["recipients"][1].style,
             },
             {
                 type = "colorpicker",
-                name = MailBuddy.localizationVars.mb_loc["options_font_recipient_label_color"],
-                getFunc = function() return MailBuddy.settingsVars.settings.font["recipients"][1].color.r, MailBuddy.settingsVars.settings.font["recipients"][1].color.g, MailBuddy.settingsVars.settings.font["recipients"][1].color.b, MailBuddy.settingsVars.settings.font["recipients"][1].color.a end,
-                setFunc = function(r,g,b,a) MailBuddy.settingsVars.settings.font["recipients"][1].color = {["r"] = r, ["g"] = g, ["b"] = b, ["a"] = a}
-                    MailBuddy.UpdateFontAndColor(previewLabel1, "recipients", 1)
-                    MailBuddy.UpdateFontAndColor(MailBuddy.recipientPages.selectedLabel, "recipients", 1)
+                name = mailbuddyLoc["options_font_recipient_label_color"],
+                getFunc = function() return settingsAtLAM.font["recipients"][1].color.r, settingsAtLAM.font["recipients"][1].color.g, settingsAtLAM.font["recipients"][1].color.b, settingsAtLAM.font["recipients"][1].color.a end,
+                setFunc = function(r,g,b,a) settingsAtLAM.font["recipients"][1].color = {["r"] = r, ["g"] = g, ["b"] = b, ["a"] = a}
+                    mb.UpdateFontAndColor(previewLabel1, "recipients", 1)
+                    mb.UpdateFontAndColor(mb.recipientPages.selectedLabel, "recipients", 1)
                 end,
                 width = "half",
-                default = MailBuddy.settingsVars.settings.font["recipients"][1].color,
+                default = settingsAtLAMDefaults.font["recipients"][1].color,
             },
 
             {
                 type = 'dropdown',
-                name = MailBuddy.localizationVars.mb_loc["options_font_recipients_box"],
+                name = mailbuddyLoc["options_font_recipients_box"],
                 choices = LMP:List('font'),
-                getFunc = function() return MailBuddy.settingsVars.settings.font["recipients"][2].family end,
-                setFunc = function(value) MailBuddy.settingsVars.settings.font["recipients"][2].family = value
-                    MailBuddy.UpdateFontAndColor(previewLabel2, "recipients", 2)
-                    MailBuddy.UpdateAllLabels("recipients", -1, -1)
+                getFunc = function() return settingsAtLAM.font["recipients"][2].family end,
+                setFunc = function(value) settingsAtLAM.font["recipients"][2].family = value
+                    mb.UpdateFontAndColor(previewLabel2, "recipients", 2)
+                    mb.UpdateAllLabels("recipients", -1, -1)
                 end,
-                default = MailBuddy.settingsVars.settings.font["recipients"][2].family,
+                default = settingsAtLAMDefaults.font["recipients"][2].family,
             },
             {
                 type = "slider",
-                name = MailBuddy.localizationVars.mb_loc["options_font_recipients_box_size"],
+                name = mailbuddyLoc["options_font_recipients_box_size"],
                 min = 8,
                 max = 32,
-                getFunc = function() return MailBuddy.settingsVars.settings.font["recipients"][2].size end,
-                setFunc = function(size) MailBuddy.settingsVars.settings.font["recipients"][2].size = size
-                    MailBuddy.UpdateFontAndColor(previewLabel2, "recipients", 2)
-                    MailBuddy.UpdateAllLabels("recipients", -1, -1)
+                getFunc = function() return settingsAtLAM.font["recipients"][2].size end,
+                setFunc = function(size) settingsAtLAM.font["recipients"][2].size = size
+                    mb.UpdateFontAndColor(previewLabel2, "recipients", 2)
+                    mb.UpdateAllLabels("recipients", -1, -1)
                 end,
-                default = MailBuddy.settingsVars.settings.font["recipients"][2].size,
+                default = settingsAtLAMDefaults.font["recipients"][2].size,
             },
             {
                 type = 'dropdown',
-                name = MailBuddy.localizationVars.mb_loc["options_font_recipients_box_style"],
-                choices = MailBuddy.settingsVars.fontStyles,
-                getFunc = function() return MailBuddy.settingsVars.settings.font["recipients"][2].style end,
-                setFunc = function(value) MailBuddy.settingsVars.settings.font["recipients"][2].style = value
-                    MailBuddy.UpdateFontAndColor(previewLabel2, "recipients", 2)
-                    MailBuddy.UpdateAllLabels("recipients", -1, -1)
+                name = mailbuddyLoc["options_font_recipients_box_style"],
+                choices = mb.settingsVars.fontStyles,
+                getFunc = function() return settingsAtLAM.font["recipients"][2].style end,
+                setFunc = function(value) settingsAtLAM.font["recipients"][2].style = value
+                    mb.UpdateFontAndColor(previewLabel2, "recipients", 2)
+                    mb.UpdateAllLabels("recipients", -1, -1)
                 end,
                 width = "half",
-                default = MailBuddy.settingsVars.settings.font["recipients"][2].style,
+                default = settingsAtLAMDefaults.font["recipients"][2].style,
             },
             {
                 type = "colorpicker",
-                name = MailBuddy.localizationVars.mb_loc["options_font_recipients_box_color"],
-                getFunc = function() return MailBuddy.settingsVars.settings.font["recipients"][2].color.r, MailBuddy.settingsVars.settings.font["recipients"][2].color.g, MailBuddy.settingsVars.settings.font["recipients"][2].color.b, MailBuddy.settingsVars.settings.font["recipients"][2].color.a end,
-                setFunc = function(r,g,b,a) MailBuddy.settingsVars.settings.font["recipients"][2].color = {["r"] = r, ["g"] = g, ["b"] = b, ["a"] = a}
-                    MailBuddy.UpdateFontAndColor(previewLabel2, "recipients", 2)
-                    MailBuddy.UpdateAllLabels("recipients", -1, -1)
+                name = mailbuddyLoc["options_font_recipients_box_color"],
+                getFunc = function() return settingsAtLAM.font["recipients"][2].color.r, settingsAtLAM.font["recipients"][2].color.g, settingsAtLAM.font["recipients"][2].color.b, settingsAtLAM.font["recipients"][2].color.a end,
+                setFunc = function(r,g,b,a) settingsAtLAM.font["recipients"][2].color = {["r"] = r, ["g"] = g, ["b"] = b, ["a"] = a}
+                    mb.UpdateFontAndColor(previewLabel2, "recipients", 2)
+                    mb.UpdateAllLabels("recipients", -1, -1)
                 end,
                 width = "half",
-                default = MailBuddy.settingsVars.settings.font["recipients"][2].color,
+                default = settingsAtLAMDefaults.font["recipients"][2].color,
             },
 
             {
                 type = 'dropdown',
-                name = MailBuddy.localizationVars.mb_loc["options_font_subject_label"],
+                name = mailbuddyLoc["options_font_subject_label"],
                 choices = LMP:List('font'),
-                getFunc = function() return MailBuddy.settingsVars.settings.font["subjects"][1].family end,
-                setFunc = function(value) MailBuddy.settingsVars.settings.font["subjects"][1].family = value
-                    MailBuddy.UpdateFontAndColor(previewLabel3, "subjects", 1)
-                    MailBuddy.UpdateFontAndColor(MailBuddy.subjectPages.selectedLabel, "subjects", 1)
+                getFunc = function() return settingsAtLAM.font["subjects"][1].family end,
+                setFunc = function(value) settingsAtLAM.font["subjects"][1].family = value
+                    mb.UpdateFontAndColor(previewLabel3, "subjects", 1)
+                    mb.UpdateFontAndColor(mb.subjectPages.selectedLabel, "subjects", 1)
                 end,
-                default = MailBuddy.settingsVars.settings.font["subjects"][1].family,
+                default = settingsAtLAMDefaults.font["subjects"][1].family,
             },
             {
                 type = "slider",
-                name = MailBuddy.localizationVars.mb_loc["options_font_subject_label_size"],
+                name = mailbuddyLoc["options_font_subject_label_size"],
                 min = 8,
                 max = 32,
-                getFunc = function() return MailBuddy.settingsVars.settings.font["subjects"][1].size end,
-                setFunc = function(size) MailBuddy.settingsVars.settings.font["subjects"][1].size = size
-                    MailBuddy.UpdateFontAndColor(previewLabel3, "subjects", 1)
-                    MailBuddy.UpdateFontAndColor(MailBuddy.subjectPages.selectedLabel, "subjects", 1)
+                getFunc = function() return settingsAtLAM.font["subjects"][1].size end,
+                setFunc = function(size) settingsAtLAM.font["subjects"][1].size = size
+                    mb.UpdateFontAndColor(previewLabel3, "subjects", 1)
+                    mb.UpdateFontAndColor(mb.subjectPages.selectedLabel, "subjects", 1)
                 end,
-                default = MailBuddy.settingsVars.settings.font["subjects"][1].size,
+                default = settingsAtLAMDefaults.font["subjects"][1].size,
             },
             {
                 type = 'dropdown',
-                name = MailBuddy.localizationVars.mb_loc["options_font_subject_label_style"],
-                choices = MailBuddy.settingsVars.fontStyles,
-                getFunc = function() return MailBuddy.settingsVars.settings.font["subjects"][1].style end,
-                setFunc = function(value) MailBuddy.settingsVars.settings.font["subjects"][1].style = value
-                    MailBuddy.UpdateFontAndColor(previewLabel3, "subjects", 1)
-                    MailBuddy.UpdateFontAndColor(MailBuddy.subjectPages.selectedLabel, "subjects", 1)
+                name = mailbuddyLoc["options_font_subject_label_style"],
+                choices = mb.settingsVars.fontStyles,
+                getFunc = function() return settingsAtLAM.font["subjects"][1].style end,
+                setFunc = function(value) settingsAtLAM.font["subjects"][1].style = value
+                    mb.UpdateFontAndColor(previewLabel3, "subjects", 1)
+                    mb.UpdateFontAndColor(mb.subjectPages.selectedLabel, "subjects", 1)
                 end,
                 width = "half",
-                default = MailBuddy.settingsVars.settings.font["subjects"][1].style,
+                default = settingsAtLAMDefaults.font["subjects"][1].style,
             },
             {
                 type = "colorpicker",
-                name = MailBuddy.localizationVars.mb_loc["options_font_subject_label_color"],
-                getFunc = function() return MailBuddy.settingsVars.settings.font["subjects"][1].color.r, MailBuddy.settingsVars.settings.font["subjects"][1].color.g, MailBuddy.settingsVars.settings.font["subjects"][1].color.b, MailBuddy.settingsVars.settings.font["subjects"][1].color.a end,
-                setFunc = function(r,g,b,a) MailBuddy.settingsVars.settings.font["subjects"][1].color = {["r"] = r, ["g"] = g, ["b"] = b, ["a"] = a}
-                    MailBuddy.UpdateFontAndColor(previewLabel3, "subjects", 1)
-                    MailBuddy.UpdateFontAndColor(MailBuddy.subjectPages.selectedLabel, "subjects", 1)
+                name = mailbuddyLoc["options_font_subject_label_color"],
+                getFunc = function() return settingsAtLAM.font["subjects"][1].color.r, settingsAtLAM.font["subjects"][1].color.g, settingsAtLAM.font["subjects"][1].color.b, settingsAtLAM.font["subjects"][1].color.a end,
+                setFunc = function(r,g,b,a) settingsAtLAM.font["subjects"][1].color = {["r"] = r, ["g"] = g, ["b"] = b, ["a"] = a}
+                    mb.UpdateFontAndColor(previewLabel3, "subjects", 1)
+                    mb.UpdateFontAndColor(mb.subjectPages.selectedLabel, "subjects", 1)
                 end,
                 width = "half",
-                default = MailBuddy.settingsVars.settings.font["subjects"][1].color,
+                default = settingsAtLAMDefaults.font["subjects"][1].color,
             },
 
             {
                 type = 'dropdown',
-                name = MailBuddy.localizationVars.mb_loc["options_font_subjects_box"],
+                name = mailbuddyLoc["options_font_subjects_box"],
                 choices = LMP:List('font'),
-                getFunc = function() return MailBuddy.settingsVars.settings.font["subjects"][2].family end,
-                setFunc = function(value) MailBuddy.settingsVars.settings.font["subjects"][2].family = value
-                    MailBuddy.UpdateFontAndColor(previewLabel4, "subjects", 2)
-                    MailBuddy.UpdateAllLabels("subjects", -1, -1)
+                getFunc = function() return settingsAtLAM.font["subjects"][2].family end,
+                setFunc = function(value) settingsAtLAM.font["subjects"][2].family = value
+                    mb.UpdateFontAndColor(previewLabel4, "subjects", 2)
+                    mb.UpdateAllLabels("subjects", -1, -1)
                 end,
-                default = MailBuddy.settingsVars.settings.font["subjects"][2].family,
+                default = settingsAtLAMDefaults.font["subjects"][2].family,
             },
             {
                 type = "slider",
-                name = MailBuddy.localizationVars.mb_loc["options_font_subjects_box_size"],
+                name = mailbuddyLoc["options_font_subjects_box_size"],
                 min = 8,
                 max = 32,
-                getFunc = function() return MailBuddy.settingsVars.settings.font["subjects"][2].size end,
-                setFunc = function(size) MailBuddy.settingsVars.settings.font["subjects"][2].size = size
-                    MailBuddy.UpdateFontAndColor(previewLabel4, "subjects", 2)
-                    MailBuddy.UpdateAllLabels("subjects", -1, -1)
+                getFunc = function() return settingsAtLAM.font["subjects"][2].size end,
+                setFunc = function(size) settingsAtLAM.font["subjects"][2].size = size
+                    mb.UpdateFontAndColor(previewLabel4, "subjects", 2)
+                    mb.UpdateAllLabels("subjects", -1, -1)
                 end,
-                default = MailBuddy.settingsVars.settings.font["subjects"][2].size,
+                default = settingsAtLAMDefaults.font["subjects"][2].size,
             },
             {
                 type = 'dropdown',
-                name = MailBuddy.localizationVars.mb_loc["options_font_subjects_box_style"],
-                choices = MailBuddy.settingsVars.fontStyles,
-                getFunc = function() return MailBuddy.settingsVars.settings.font["subjects"][2].style end,
-                setFunc = function(value) MailBuddy.settingsVars.settings.font["subjects"][2].style = value
-                    MailBuddy.UpdateFontAndColor(previewLabel4, "subjects", 2)
-                    MailBuddy.UpdateAllLabels("subjects", -1, -1)
+                name = mailbuddyLoc["options_font_subjects_box_style"],
+                choices = mb.settingsVars.fontStyles,
+                getFunc = function() return settingsAtLAM.font["subjects"][2].style end,
+                setFunc = function(value) settingsAtLAM.font["subjects"][2].style = value
+                    mb.UpdateFontAndColor(previewLabel4, "subjects", 2)
+                    mb.UpdateAllLabels("subjects", -1, -1)
                 end,
                 width = "half",
-                default = MailBuddy.settingsVars.settings.font["subjects"][2].style,
+                default = settingsAtLAMDefaults.font["subjects"][2].style,
             },
             {
                 type = "colorpicker",
-                name = MailBuddy.localizationVars.mb_loc["options_font_subjects_box_color"],
-                getFunc = function() return MailBuddy.settingsVars.settings.font["subjects"][2].color.r, MailBuddy.settingsVars.settings.font["subjects"][2].color.g, MailBuddy.settingsVars.settings.font["subjects"][2].color.b, MailBuddy.settingsVars.settings.font["subjects"][2].color.a end,
-                setFunc = function(r,g,b,a) MailBuddy.settingsVars.settings.font["subjects"][2].color = {["r"] = r, ["g"] = g, ["b"] = b, ["a"] = a}
-                    MailBuddy.UpdateFontAndColor(previewLabel4, "subjects", 2)
-                    MailBuddy.UpdateAllLabels("subjects", -1, -1)
+                name = mailbuddyLoc["options_font_subjects_box_color"],
+                getFunc = function() return settingsAtLAM.font["subjects"][2].color.r, settingsAtLAM.font["subjects"][2].color.g, settingsAtLAM.font["subjects"][2].color.b, settingsAtLAM.font["subjects"][2].color.a end,
+                setFunc = function(r,g,b,a) settingsAtLAM.font["subjects"][2].color = {["r"] = r, ["g"] = g, ["b"] = b, ["a"] = a}
+                    mb.UpdateFontAndColor(previewLabel4, "subjects", 2)
+                    mb.UpdateAllLabels("subjects", -1, -1)
                 end,
                 width = "half",
-                default = MailBuddy.settingsVars.settings.font["subjects"][2].color,
+                default = settingsAtLAMDefaults.font["subjects"][2].color,
             },
 
             {
                 type = 'header',
-                name = MailBuddy.localizationVars.mb_loc["options_additional"],
+                name = mailbuddyLoc["options_additional"],
             },
 			{
 				type = "checkbox",
-				name = MailBuddy.localizationVars.mb_loc["options_toggle_recipients_box_click"],
-				tooltip = MailBuddy.localizationVars.mb_loc["options_toggle_recipients_box_click_tooltip"],
-				getFunc = function() return MailBuddy.settingsVars.settings.additional["RecipientsBoxVisibility"] end,
-				setFunc = function(value) MailBuddy.settingsVars.settings.additional["RecipientsBoxVisibility"] = not MailBuddy.settingsVars.settings.additional["RecipientsBoxVisibility"] end,
-	            default = MailBuddy.settingsVars.settings.additional["RecipientsBoxVisibility"],
-                disabled = function() return MailBuddy.settingsVars.settings.useAlternativeLayout end,
+				name = mailbuddyLoc["options_toggle_recipients_box_click"],
+				tooltip = mailbuddyLoc["options_toggle_recipients_box_click_tooltip"],
+				getFunc = function() return settingsAtLAM.additional["RecipientsBoxVisibility"] end,
+				setFunc = function(value) settingsAtLAM.additional["RecipientsBoxVisibility"] = value end,
+	            default = settingsAtLAMDefaults.additional["RecipientsBoxVisibility"],
+                disabled = function() return settingsAtLAM.useAlternativeLayout end,
 	            width   = "full",
 			},
 			{
 				type = "checkbox",
-				name = MailBuddy.localizationVars.mb_loc["options_toggle_subjects_box_click"],
-				tooltip = MailBuddy.localizationVars.mb_loc["options_toggle_subjects_box_click_tooltip"],
-				getFunc = function() return MailBuddy.settingsVars.settings.additional["SubjectsBoxVisibility"] end,
-				setFunc = function(value) MailBuddy.settingsVars.settings.additional["SubjectsBoxVisibility"] = not MailBuddy.settingsVars.settings.additional["SubjectsBoxVisibility"] end,
-	            default = MailBuddy.settingsVars.settings.additional["SubjectsBoxVisibility"],
-                disabled = function() return MailBuddy.settingsVars.settings.useAlternativeLayout end,
+				name = mailbuddyLoc["options_toggle_subjects_box_click"],
+				tooltip = mailbuddyLoc["options_toggle_subjects_box_click_tooltip"],
+				getFunc = function() return settingsAtLAM.additional["SubjectsBoxVisibility"] end,
+				setFunc = function(value) settingsAtLAM.additional["SubjectsBoxVisibility"] = value end,
+	            default = settingsAtLAMDefaults.additional["SubjectsBoxVisibility"],
+                disabled = function() return settingsAtLAM.useAlternativeLayout end,
 	            width   = "full",
 			},
             {
                 type = 'header',
-                name = MailBuddy.localizationVars.mb_loc["options_standard_mail"],
+                name = mailbuddyLoc["options_standard_mail"],
             },
 	   		{
 				type = "editbox",
-				name = MailBuddy.localizationVars.mb_loc["options_standard_recipient"],
-				tooltip = MailBuddy.localizationVars.mb_loc["options_standard_recipient_tooltip"],
-				getFunc = function() return MailBuddy.settingsVars.settings.standard["To"] end,
+				name = mailbuddyLoc["options_standard_recipient"],
+				tooltip = mailbuddyLoc["options_standard_recipient_tooltip"],
+				getFunc = function() return settingsAtLAM.standard["To"] end,
 				setFunc = function(newValue)
-	            	MailBuddy.settingsVars.settings.standard["To"] = newValue
+	            	settingsAtLAM.standard["To"] = newValue
 	            end,
 				width = "full",
-				default = MailBuddy.settingsVars.settings.standard["To"],
+				default = settingsAtLAMDefaults.standard["To"],
                 reference = "MailBuddy_StandardRecipientName_SettingsEdit",
-                disabled = function() return MailBuddy.settingsVars.settings.remember.recipient["last"] end,
+                disabled = function() return settingsAtLAM.remember.recipient["last"] end,
 			},
             {
                 type = "editbox",
-                name = MailBuddy.localizationVars.mb_loc["options_standard_subject"],
-                tooltip = MailBuddy.localizationVars.mb_loc["options_standard_subject_tooltip"],
-                getFunc = function() return MailBuddy.settingsVars.settings.standard["Subject"] end,
+                name = mailbuddyLoc["options_standard_subject"],
+                tooltip = mailbuddyLoc["options_standard_subject_tooltip"],
+                getFunc = function() return settingsAtLAM.standard["Subject"] end,
                 setFunc = function(newValue)
-                    MailBuddy.settingsVars.settings.standard["Subject"] = newValue
+                    settingsAtLAM.standard["Subject"] = newValue
                 end,
                 width = "full",
-                default = MailBuddy.settingsVars.settings.standard["Subject"],
-                disabled = function() return MailBuddy.settingsVars.settings.remember.subject["last"] end,
+                default = settingsAtLAMDefaults.standard["Subject"],
+                disabled = function() return settingsAtLAM.remember.subject["last"] end,
             },
             {
                 type = 'header',
-                name = MailBuddy.localizationVars.mb_loc["options_mail_brain"],
+                name = mailbuddyLoc["options_mail_brain"],
             },
             {
                 type = "checkbox",
-                name = MailBuddy.localizationVars.mb_loc["options_reuse_recipient"],
-                tooltip = MailBuddy.localizationVars.mb_loc["options_reuse_recipient_tooltip"],
-                getFunc = function() return MailBuddy.settingsVars.settings.remember.recipient["last"] end,
-                setFunc = function(value) MailBuddy.settingsVars.settings.remember.recipient["last"] = not MailBuddy.settingsVars.settings.remember.recipient["last"] end,
-                default = MailBuddy.settingsVars.settings.remember.recipient["last"],
+                name = mailbuddyLoc["options_reuse_recipient"],
+                tooltip = mailbuddyLoc["options_reuse_recipient_tooltip"],
+                getFunc = function() return settingsAtLAM.remember.recipient["last"] end,
+                setFunc = function(value) settingsAtLAM.remember.recipient["last"] = value end,
+                default = settingsAtLAMDefaults.remember.recipient["last"],
                 width   = "full",
             },
             {
                 type = "checkbox",
-                name = MailBuddy.localizationVars.mb_loc["options_reuse_subject"],
-                tooltip = MailBuddy.localizationVars.mb_loc["options_reuse_subject_tooltip"],
-                getFunc = function() return MailBuddy.settingsVars.settings.remember.subject["last"] end,
-                setFunc = function(value) MailBuddy.settingsVars.settings.remember.subject["last"] = not MailBuddy.settingsVars.settings.remember.subject["last"] end,
-                default = MailBuddy.settingsVars.settings.remember.subject["last"],
+                name = mailbuddyLoc["options_reuse_subject"],
+                tooltip = mailbuddyLoc["options_reuse_subject_tooltip"],
+                getFunc = function() return settingsAtLAM.remember.subject["last"] end,
+                setFunc = function(value) settingsAtLAM.remember.subject["last"] = value end,
+                default = settingsAtLAMDefaults.remember.subject["last"],
                 width   = "full",
             },
             {
                 type = "checkbox",
-                name = MailBuddy.localizationVars.mb_loc["options_reuse_body"],
-                tooltip = MailBuddy.localizationVars.mb_loc["options_reuse_body_tooltip"],
-                getFunc = function() return MailBuddy.settingsVars.settings.remember.body["last"] end,
-                setFunc = function(value) MailBuddy.settingsVars.settings.remember.body["last"] = not MailBuddy.settingsVars.settings.remember.body["last"] end,
-                default = MailBuddy.settingsVars.settings.remember.body["last"],
+                name = mailbuddyLoc["options_reuse_body"],
+                tooltip = mailbuddyLoc["options_reuse_body_tooltip"],
+                getFunc = function() return settingsAtLAM.remember.body["last"] end,
+                setFunc = function(value) settingsAtLAM.remember.body["last"] = value end,
+                default = settingsAtLAMDefaults.remember.body["last"],
                 width   = "full",
             },
             {
                 type = 'header',
-                name = MailBuddy.localizationVars.mb_loc["options_automatism"],
+                name = mailbuddyLoc["options_automatism"],
             },
 			{
 				type = "checkbox",
-				name = MailBuddy.localizationVars.mb_loc["options_auto_hide_recipients_box"],
-				tooltip = MailBuddy.localizationVars.mb_loc["options_auto_hide_recipients_box_tooltip"],
-				getFunc = function() return MailBuddy.settingsVars.settings.automatism.hide["RecipientsBox"] end,
-				setFunc = function(value) MailBuddy.settingsVars.settings.automatism.hide["RecipientsBox"] = not MailBuddy.settingsVars.settings.automatism.hide["RecipientsBox"] end,
-	            default = MailBuddy.settingsVars.settings.automatism.hide["RecipientsBox"],
+				name = mailbuddyLoc["options_auto_hide_recipients_box"],
+				tooltip = mailbuddyLoc["options_auto_hide_recipients_box_tooltip"],
+				getFunc = function() return settingsAtLAM.automatism.hide["RecipientsBox"] end,
+				setFunc = function(value) settingsAtLAM.automatism.hide["RecipientsBox"] = value end,
+	            default = settingsAtLAMDefaults.automatism.hide["RecipientsBox"],
 	            width   = "full",
 			},
 			{
 				type = "checkbox",
-				name = MailBuddy.localizationVars.mb_loc["options_auto_hide_subjects_box"],
-				tooltip = MailBuddy.localizationVars.mb_loc["options_auto_hide_subjects_box_tooltip"],
-				getFunc = function() return MailBuddy.settingsVars.settings.automatism.hide["SubjectsBox"] end,
-				setFunc = function(value) MailBuddy.settingsVars.settings.automatism.hide["SubjectsBox"] = not MailBuddy.settingsVars.settings.automatism.hide["SubjectsBox"] end,
-	            default = MailBuddy.settingsVars.settings.automatism.hide["SubjectsBox"],
+				name = mailbuddyLoc["options_auto_hide_subjects_box"],
+				tooltip = mailbuddyLoc["options_auto_hide_subjects_box_tooltip"],
+				getFunc = function() return settingsAtLAM.automatism.hide["SubjectsBox"] end,
+				setFunc = function(value) settingsAtLAM.automatism.hide["SubjectsBox"] = value end,
+	            default = settingsAtLAMDefaults.automatism.hide["SubjectsBox"],
 	            width   = "full",
 			},
             {
                 type = "checkbox",
-                name = MailBuddy.localizationVars.mb_loc["options_auto_close_recipients_box"],
-                tooltip = MailBuddy.localizationVars.mb_loc["options_auto_close_recipients_box_tooltip"],
-                getFunc = function() return MailBuddy.settingsVars.settings.automatism.close["RecipientsBox"] end,
-                setFunc = function(value) MailBuddy.settingsVars.settings.automatism.close["RecipientsBox"] = not MailBuddy.settingsVars.settings.automatism.close["RecipientsBox"] end,
-                default = MailBuddy.settingsVars.settings.automatism.close["RecipientsBox"],
+                name = mailbuddyLoc["options_auto_close_recipients_box"],
+                tooltip = mailbuddyLoc["options_auto_close_recipients_box_tooltip"],
+                getFunc = function() return settingsAtLAM.automatism.close["RecipientsBox"] end,
+                setFunc = function(value) settingsAtLAM.automatism.close["RecipientsBox"] = value end,
+                default = settingsAtLAMDefaults.automatism.close["RecipientsBox"],
                 width   = "full",
             },
             {
                 type = "checkbox",
-                name = MailBuddy.localizationVars.mb_loc["options_auto_close_subjects_box"],
-                tooltip = MailBuddy.localizationVars.mb_loc["options_auto_close_subjects_box_tooltip"],
-                getFunc = function() return MailBuddy.settingsVars.settings.automatism.close["SubjectsBox"] end,
-                setFunc = function(value) MailBuddy.settingsVars.settings.automatism.close["SubjectsBox"] = not MailBuddy.settingsVars.settings.automatism.close["SubjectsBox"] end,
-                default = MailBuddy.settingsVars.settings.automatism.close["SubjectsBox"],
-                width   = "full",
-            },
-            {
-                type = 'header',
-                name = MailBuddy.localizationVars.mb_loc["options_autofocus"],
-            },
-            {
-                type = "checkbox",
-                name = MailBuddy.localizationVars.mb_loc["options_auto_focus_recipients_field"],
-                tooltip = MailBuddy.localizationVars.mb_loc["options_auto_focus_recipients_field_tooltip"],
-                getFunc = function() return MailBuddy.settingsVars.settings.automatism.focus["To"] end,
-                setFunc = function(value) MailBuddy.settingsVars.settings.automatism.focus["To"] = not MailBuddy.settingsVars.settings.automatism.focus["To"] end,
-                default = MailBuddy.settingsVars.settings.automatism.focus["To"],
-                width   = "full",
-            },
-            {
-                type = "checkbox",
-                name = MailBuddy.localizationVars.mb_loc["options_auto_focus_auto_open_recipients_field"],
-                tooltip = MailBuddy.localizationVars.mb_loc["options_auto_focus_auto_open_recipients_field_tooltip"],
-                getFunc = function() return MailBuddy.settingsVars.settings.automatism.focusOpen["To"] end,
-                setFunc = function(value) MailBuddy.settingsVars.settings.automatism.focusOpen["To"] = not MailBuddy.settingsVars.settings.automatism.focusOpen["To"] end,
-                default = MailBuddy.settingsVars.settings.automatism.focusOpen["To"],
-				disabled = function() return not MailBuddy.settingsVars.settings.automatism.focus["To"] end,
-                width   = "full",
-            },
-            {
-                type = "checkbox",
-                name = MailBuddy.localizationVars.mb_loc["options_auto_focus_subjects_field"],
-                tooltip = MailBuddy.localizationVars.mb_loc["options_auto_focus_subjects_field_tooltip"],
-                getFunc = function() return MailBuddy.settingsVars.settings.automatism.focus["Subject"] end,
-                setFunc = function(value) MailBuddy.settingsVars.settings.automatism.focus["Subject"] = not MailBuddy.settingsVars.settings.automatism.focus["Subject"] end,
-                default = MailBuddy.settingsVars.settings.automatism.focus["Subject"],
-                width   = "full",
-            },
-            {
-                type = "checkbox",
-                name = MailBuddy.localizationVars.mb_loc["options_auto_focus_auto_open_subjects_field"],
-                tooltip = MailBuddy.localizationVars.mb_loc["options_auto_focus_auto_open_subjects_field_tooltip"],
-                getFunc = function() return MailBuddy.settingsVars.settings.automatism.focusOpen["Subject"] end,
-                setFunc = function(value) MailBuddy.settingsVars.settings.automatism.focusOpen["Subject"] = not MailBuddy.settingsVars.settings.automatism.focusOpen["Subject"] end,
-                default = MailBuddy.settingsVars.settings.automatism.focusOpen["Subject"],
-				disabled = function() return not MailBuddy.settingsVars.settings.automatism.focus["Subject"] end,
-                width   = "full",
-            },
-            {
-                type = "checkbox",
-                name = MailBuddy.localizationVars.mb_loc["options_auto_focus_body_field"],
-                tooltip = MailBuddy.localizationVars.mb_loc["options_auto_focus_body_field_tooltip"],
-                getFunc = function() return MailBuddy.settingsVars.settings.automatism.focus["Body"] end,
-                setFunc = function(value) MailBuddy.settingsVars.settings.automatism.focus["Body"] = not MailBuddy.settingsVars.settings.automatism.focus["Body"] end,
-                default = MailBuddy.settingsVars.settings.automatism.focus["Body"],
+                name = mailbuddyLoc["options_auto_close_subjects_box"],
+                tooltip = mailbuddyLoc["options_auto_close_subjects_box_tooltip"],
+                getFunc = function() return settingsAtLAM.automatism.close["SubjectsBox"] end,
+                setFunc = function(value) settingsAtLAM.automatism.close["SubjectsBox"] = value end,
+                default = settingsAtLAMDefaults.automatism.close["SubjectsBox"],
                 width   = "full",
             },
             {
                 type = 'header',
-                name = MailBuddy.localizationVars.mb_loc["options_header_sender"],
+                name = mailbuddyLoc["options_autofocus"],
             },
             {
                 type = "checkbox",
-                name = MailBuddy.localizationVars.mb_loc["options_show_account_name"],
-                tooltip = MailBuddy.localizationVars.mb_loc["options_show_account_name_tooltip"],
-                getFunc = function() return MailBuddy.settingsVars.settings.showAccountName end,
-                setFunc = function(value) MailBuddy.settingsVars.settings.showAccountName = not MailBuddy.settingsVars.settings.showAccountName end,
-                default = MailBuddy.settingsVars.settings.showAccountName,
+                name = mailbuddyLoc["options_auto_focus_recipients_field"],
+                tooltip = mailbuddyLoc["options_auto_focus_recipients_field_tooltip"],
+                getFunc = function() return settingsAtLAM.automatism.focus["To"] end,
+                setFunc = function(value) settingsAtLAM.automatism.focus["To"] = value end,
+                default = settingsAtLAMDefaults.automatism.focus["To"],
                 width   = "full",
-                disabled = function() return MailBuddy.settingsVars.settings.showCharacterName end,
             },
             {
                 type = "checkbox",
-                name = MailBuddy.localizationVars.mb_loc["options_show_character_name"],
-                tooltip = MailBuddy.localizationVars.mb_loc["options_show_character_name_tooltip"],
-                getFunc = function() return MailBuddy.settingsVars.settings.showCharacterName end,
-                setFunc = function(value) MailBuddy.settingsVars.settings.showCharacterName = not MailBuddy.settingsVars.settings.showCharacterName end,
-                default = MailBuddy.settingsVars.settings.showCharacterName,
+                name = mailbuddyLoc["options_auto_focus_auto_open_recipients_field"],
+                tooltip = mailbuddyLoc["options_auto_focus_auto_open_recipients_field_tooltip"],
+                getFunc = function() return settingsAtLAM.automatism.focusOpen["To"] end,
+                setFunc = function(value) settingsAtLAM.automatism.focusOpen["To"] = value end,
+                default = settingsAtLAMDefaults.automatism.focusOpen["To"],
+				disabled = function() return not settingsAtLAM.automatism.focus["To"] end,
                 width   = "full",
-                disabled = function() return MailBuddy.settingsVars.settings.showAccountName end,
+            },
+            {
+                type = "checkbox",
+                name = mailbuddyLoc["options_auto_focus_subjects_field"],
+                tooltip = mailbuddyLoc["options_auto_focus_subjects_field_tooltip"],
+                getFunc = function() return settingsAtLAM.automatism.focus["Subject"] end,
+                setFunc = function(value) settingsAtLAM.automatism.focus["Subject"] = value end,
+                default = settingsAtLAMDefaults.automatism.focus["Subject"],
+                width   = "full",
+            },
+            {
+                type = "checkbox",
+                name = mailbuddyLoc["options_auto_focus_auto_open_subjects_field"],
+                tooltip = mailbuddyLoc["options_auto_focus_auto_open_subjects_field_tooltip"],
+                getFunc = function() return settingsAtLAM.automatism.focusOpen["Subject"] end,
+                setFunc = function(value) settingsAtLAM.automatism.focusOpen["Subject"] = value end,
+                default = settingsAtLAMDefaults.automatism.focusOpen["Subject"],
+				disabled = function() return not settingsAtLAM.automatism.focus["Subject"] end,
+                width   = "full",
+            },
+            {
+                type = "checkbox",
+                name = mailbuddyLoc["options_auto_focus_body_field"],
+                tooltip = mailbuddyLoc["options_auto_focus_body_field_tooltip"],
+                getFunc = function() return settingsAtLAM.automatism.focus["Body"] end,
+                setFunc = function(value) settingsAtLAM.automatism.focus["Body"] = value end,
+                default = settingsAtLAMDefaults.automatism.focus["Body"],
+                width   = "full",
             },
             {
                 type = 'header',
-                name = MailBuddy.localizationVars.mb_loc["options_header_inbox"],
+                name = mailbuddyLoc["options_header_sender"],
             },
             {
                 type = "checkbox",
-                name = MailBuddy.localizationVars.mb_loc["options_show_mail_count"],
-                tooltip = MailBuddy.localizationVars.mb_loc["options_show_mail_count_tooltip"],
-                getFunc = function() return MailBuddy.settingsVars.settings.showTotalMailCountInInbox end,
-                setFunc = function(value) MailBuddy.settingsVars.settings.showTotalMailCountInInbox = not MailBuddy.settingsVars.settings.showTotalMailCountInInbox end,
-                default = MailBuddy.settingsVars.settings.showTotalMailCountInInbox,
+                name = mailbuddyLoc["options_show_account_name"],
+                tooltip = mailbuddyLoc["options_show_account_name_tooltip"],
+                getFunc = function() return settingsAtLAM.showAccountName end,
+                setFunc = function(value) settingsAtLAM.showAccountName = value end,
+                default = settingsAtLAMDefaults.showAccountName,
+                width   = "full",
+                disabled = function() return settingsAtLAM.showCharacterName end,
+            },
+            {
+                type = "checkbox",
+                name = mailbuddyLoc["options_show_character_name"],
+                tooltip = mailbuddyLoc["options_show_character_name_tooltip"],
+                getFunc = function() return settingsAtLAM.showCharacterName end,
+                setFunc = function(value) settingsAtLAM.showCharacterName = value end,
+                default = settingsAtLAMDefaults.showCharacterName,
+                width   = "full",
+                disabled = function() return settingsAtLAM.showAccountName end,
+            },
+            {
+                type = 'header',
+                name = mailbuddyLoc["options_header_inbox"],
+            },
+            {
+                type = "checkbox",
+                name = mailbuddyLoc["options_show_mail_count"],
+                tooltip = mailbuddyLoc["options_show_mail_count_tooltip"],
+                getFunc = function() return settingsAtLAM.showTotalMailCountInInbox end,
+                setFunc = function(value) settingsAtLAM.showTotalMailCountInInbox = value end,
+                default = settingsAtLAMDefaults.showTotalMailCountInInbox,
                 width   = "full",
             },
 
 		} -- END OF OPTIONS TABLE
-		LAM:RegisterOptionControls(MailBuddy.addonVars.name.."panel", optionsTable)
+		LAM:RegisterOptionControls(addonName.."panel", optionsTable)
 	end
 --------------------------------------------------------------------------------
 
-	function MailBuddy.GetPage(pageType, oldPage, doPlaySound)
+	function mb.GetPage(pageType, oldPage, doPlaySound)
         if pageType == nil or pageType == "" then return end
         oldPage = oldPage or 0
         doPlaySound = doPlaySound or false
 
+        local settings = mb.settingsVars.settings
+
         if pageType == "recipients" then
-            if MailBuddy.settingsVars.settings.curRecipientPage ~= oldPage then
+            if settings.curRecipientPage ~= oldPage then
                 --Pages for the recipients
-                if (MailBuddy.settingsVars.settings.curRecipientPage == "1") then
+                if settings.curRecipientPage == "1" then
                     MailBuddy_RecipientsPage1:SetHidden(false)
                     MailBuddy_RecipientsPage2:SetHidden(true)
                     MailBuddy_RecipientsPage3:SetHidden(true)
@@ -1419,9 +1518,9 @@
                     MailBuddy_MailSendRecipientsBoxButtonGlow2:SetHidden(true)
                     MailBuddy_MailSendRecipientsBoxButtonGlow3:SetHidden(true)
                     if doPlaySound then
-                        MailBuddy.PlaySoundNow(SOUNDS["BOOK_PAGE_TURN"])
+                        mb.PlaySoundNow(SOUNDS["BOOK_PAGE_TURN"])
                     end
-                    elseif (MailBuddy.settingsVars.settings.curRecipientPage == "2") then
+                elseif settings.curRecipientPage == "2" then
                     MailBuddy_RecipientsPage2:SetHidden(false)
                     MailBuddy_RecipientsPage1:SetHidden(true)
                     MailBuddy_RecipientsPage3:SetHidden(true)
@@ -1429,9 +1528,9 @@
                     MailBuddy_MailSendRecipientsBoxButtonGlow1:SetHidden(true)
                     MailBuddy_MailSendRecipientsBoxButtonGlow3:SetHidden(true)
                     if doPlaySound then
-                        MailBuddy.PlaySoundNow(SOUNDS["BOOK_PAGE_TURN"])
+                        mb.PlaySoundNow(SOUNDS["BOOK_PAGE_TURN"])
                     end
-                elseif (MailBuddy.settingsVars.settings.curRecipientPage == "3") then
+                elseif settings.curRecipientPage == "3" then
                     MailBuddy_RecipientsPage3:SetHidden(false)
                     MailBuddy_RecipientsPage1:SetHidden(true)
                     MailBuddy_RecipientsPage2:SetHidden(true)
@@ -1439,14 +1538,14 @@
                     MailBuddy_MailSendRecipientsBoxButtonGlow1:SetHidden(true)
                     MailBuddy_MailSendRecipientsBoxButtonGlow2:SetHidden(true)
                     if doPlaySound then
-                        MailBuddy.PlaySoundNow(SOUNDS["BOOK_PAGE_TURN"])
+                        mb.PlaySoundNow(SOUNDS["BOOK_PAGE_TURN"])
                     end
                 end
             end
         elseif pageType == "subjects" then
-            if MailBuddy.settingsVars.settings.curSubjectPage ~= oldPage then
+            if settings.curSubjectPage ~= oldPage then
                 --Pages for the subjects
-                if (MailBuddy.settingsVars.settings.curSubjectPage == "1") then
+                if settings.curSubjectPage == "1" then
                     MailBuddy_SubjectsPage1:SetHidden(false)
                     MailBuddy_SubjectsPage2:SetHidden(true)
                     MailBuddy_SubjectsPage3:SetHidden(true)
@@ -1454,9 +1553,9 @@
                     MailBuddy_MailSendSubjectsBoxButtonGlow2:SetHidden(true)
                     MailBuddy_MailSendSubjectsBoxButtonGlow3:SetHidden(true)
                     if doPlaySound then
-                        MailBuddy.PlaySoundNow(SOUNDS["BOOK_PAGE_TURN"])
+                        mb.PlaySoundNow(SOUNDS["BOOK_PAGE_TURN"])
                     end
-                elseif (MailBuddy.settingsVars.settings.curSubjectPage == "2") then
+                elseif settings.curSubjectPage == "2" then
                     MailBuddy_SubjectsPage2:SetHidden(false)
                     MailBuddy_SubjectsPage1:SetHidden(true)
                     MailBuddy_SubjectsPage3:SetHidden(true)
@@ -1464,9 +1563,9 @@
                     MailBuddy_MailSendSubjectsBoxButtonGlow1:SetHidden(true)
                     MailBuddy_MailSendSubjectsBoxButtonGlow3:SetHidden(true)
                     if doPlaySound then
-                        MailBuddy.PlaySoundNow(SOUNDS["BOOK_PAGE_TURN"])
+                        mb.PlaySoundNow(SOUNDS["BOOK_PAGE_TURN"])
                     end
-                elseif (MailBuddy.settingsVars.settings.curSubjectPage == "3") then
+                elseif settings.curSubjectPage == "3" then
                     MailBuddy_SubjectsPage3:SetHidden(false)
                     MailBuddy_SubjectsPage1:SetHidden(true)
                     MailBuddy_SubjectsPage2:SetHidden(true)
@@ -1474,23 +1573,24 @@
                     MailBuddy_MailSendSubjectsBoxButtonGlow1:SetHidden(true)
                     MailBuddy_MailSendSubjectsBoxButtonGlow2:SetHidden(true)
                     if doPlaySound then
-                        MailBuddy.PlaySoundNow(SOUNDS["BOOK_PAGE_TURN"])
+                        mb.PlaySoundNow(SOUNDS["BOOK_PAGE_TURN"])
                     end
                 end
             end
         end
 	end
 
-	function MailBuddy.mapPageAndEntry(p_pageIndex, p_Type)
+	function mb.mapPageAndEntry(p_pageIndex, p_Type)
 		if p_pageIndex == nil or p_Type == nil then return end
 		local pageEntry
 		if p_pageIndex ~= 0 then
 			--Get the recipient page and entry
 		    if p_Type == "recipient" then
-	            for pageNr, maxEntries in pairs (MailBuddy.recipientPages.maxEntriesUntilHere) do
+                local recipientPages = mb.recipientPages
+	            for pageNr, maxEntries in pairs (recipientPages.maxEntriesUntilHere) do
 		        	if p_pageIndex <= maxEntries then
 	                    if pageNr > 1 then
-		                    pageEntry = p_pageIndex - ((pageNr-1) * MailBuddy.recipientPages.entriesPerPage)
+		                    pageEntry = p_pageIndex - ((pageNr-1) * recipientPages.entriesPerPage)
 						else
 							pageEntry = p_pageIndex
 	                    end
@@ -1499,10 +1599,11 @@
 	           	end
 			--Get the subject page and entry
 	        elseif p_Type == "subject" then
-	            for pageNr, maxEntries in pairs (MailBuddy.subjectPages.maxEntriesUntilHere) do
+                local subjectPages = mb.subjectPages
+	            for pageNr, maxEntries in pairs (subjectPages.maxEntriesUntilHere) do
 		        	if p_pageIndex <= maxEntries then
 	                    if pageNr > 1 then
-		                    pageEntry = p_pageIndex - ((pageNr-1) * MailBuddy.subjectPages.entriesPerPage)
+		                    pageEntry = p_pageIndex - ((pageNr-1) * subjectPages.entriesPerPage)
 						else
 							pageEntry = p_pageIndex
 	                    end
@@ -1518,7 +1619,7 @@
 	end
 
 	--Update the tooltips of the edit field to show the non-abbreviated text inside the tooltip
-	function MailBuddy.UpdateEditFieldToolTip(editControl, tooltipText, tooltiptextShort)
+	function mb.UpdateEditFieldToolTip(editControl, tooltipText, tooltiptextShort)
     	if editControl == nil or tooltipText == "" then return end
 
         if tooltipText ~= tooltiptextShort then
@@ -1534,33 +1635,35 @@
     end
 
     --Set the focus to the next field that needs it
-    function MailBuddy.FocusNextField()
-        if  not MailBuddy.settingsVars.settings.automatism.focus["To"]
-            and not MailBuddy.settingsVars.settings.automatism.focus["Subject"]
-            and not MailBuddy.settingsVars.settings.automatism.focus["Body"] then return end
-        if MailBuddy.settingsVars.settings.automatism.focus["Body"] and ZO_MailSendToField:GetText() ~= "" and ZO_MailSendSubjectField:GetText() ~= "" then
+    function mb.FocusNextField()
+        local automatism = mb.settingsVars.settings.automatism
+        local automatismFocus = automatism.focus
+        if  not automatismFocus["To"]
+            and not automatismFocus["Subject"]
+            and not automatismFocus["Body"] then return end
+        if automatismFocus["Body"] and ZO_MailSendToField:GetText() ~= "" and ZO_MailSendSubjectField:GetText() ~= "" then
             SOUNDS["EDIT_CLICK"] = SOUNDS["NONE"]
             ZO_MailSendBodyField:TakeFocus()
             SOUNDS["EDIT_CLICK"] = SOUNDS["EDIT_CLICK_MAILBUDDY_BACKUP"]
-        elseif MailBuddy.settingsVars.settings.automatism.focus["To"] and ZO_MailSendToField:GetText() == "" and ZO_MailSendSubjectField:GetText() ~= "" then
+        elseif automatismFocus["To"] and ZO_MailSendToField:GetText() == "" and ZO_MailSendSubjectField:GetText() ~= "" then
             SOUNDS["EDIT_CLICK"] = SOUNDS["NONE"]
             ZO_MailSendToField:TakeFocus()
             SOUNDS["EDIT_CLICK"] = SOUNDS["EDIT_CLICK_MAILBUDDY_BACKUP"]
-            if MailBuddy.settingsVars.settings.automatism.focusOpen["To"] then
-        		MailBuddy.ShowBox("recipients", false, false, true, true)
+            if automatism.focusOpen["To"] then
+        		mb.ShowBox("recipients", false, false, true, true)
             end
-        elseif MailBuddy.settingsVars.settings.automatism.focus["Subject"] and ZO_MailSendToField:GetText() ~= "" and ZO_MailSendSubjectField:GetText() == "" then
+        elseif automatismFocus["Subject"] and ZO_MailSendToField:GetText() ~= "" and ZO_MailSendSubjectField:GetText() == "" then
             SOUNDS["EDIT_CLICK"] = SOUNDS["NONE"]
             ZO_MailSendSubjectField:TakeFocus()
             SOUNDS["EDIT_CLICK"] = SOUNDS["EDIT_CLICK_MAILBUDDY_BACKUP"]
-            if MailBuddy.settingsVars.settings.automatism.focusOpen["Subject"] then
-		        MailBuddy.ShowBox("subjects", false, false, true, true)
+            if automatism.focusOpen["Subject"] then
+		        mb.ShowBox("subjects", false, false, true, true)
             end
         end
     end
 
     --Close the recipients/subjects lists automatically
-    function MailBuddy.AutoCloseBox(boxType, doOverride)
+    function mb.AutoCloseBox(boxType, doOverride)
         if boxType == nil or boxType == "" then return end
         doOverride = doOverride or false
         local isGuildRoster = false
@@ -1568,16 +1671,16 @@
 
         if ZO_KeyboardFriendsList ~= nil and not ZO_KeyboardFriendsList:IsHidden() then isFriendsList = true
         elseif ZO_GuildRoster ~= nil and not ZO_GuildRoster:IsHidden() then isGuildRoster = true end
-
-        if    (boxType == "subjects" and (doOverride or MailBuddy.settingsVars.settings.automatism.close["SubjectsBox"]))
-           or (boxType == "recipients" and (doOverride or MailBuddy.settingsVars.settings.automatism.close["RecipientsBox"])) then
-            MailBuddy.ShowBox(boxType, false, true, false, false)
+        local closeSettings = mb.settingsVars.settings.automatism.close
+        if    (boxType == "subjects" and (doOverride or closeSettings["SubjectsBox"]))
+           or (boxType == "recipients" and (doOverride or closeSettings["RecipientsBox"])) then
+            mb.ShowBox(boxType, false, true, false, false)
         end
     end
 
-	function MailBuddy.UpdateNumTotalMails()
+	function mb.UpdateNumTotalMails()
         --Show the current total count of mails?
-		if MailBuddy.settingsVars.settings.showTotalMailCountInInbox then
+		if mb.settingsVars.settings.showTotalMailCountInInbox then
 			zo_callLater(function()
 				if ZO_MailInboxUnreadLabel ~= nil then
 					local unreadMails = GetNumUnreadMail()
@@ -1625,43 +1728,43 @@
 		end
 	end
 
-    function MailBuddy.RememberMailData()
+    function mb.RememberMailData()
+--d("[MailBuddy]RememberMailData()")
         --Remember the last used recipient and subject text
-        MailBuddy.settingsVars.settings.remember.recipient["text"] = MailBuddy.GetZOMailRecipient(true)
-        MailBuddy.settingsVars.settings.remember.subject["text"]   = MailBuddy.GetZOMailSubject(true)
-        MailBuddy.settingsVars.settings.remember.body["text"]      = MailBuddy.GetZOMailBody()
+        mb.settingsVars.settings.remember.recipient["text"] = mb.GetZOMailRecipient(true)
+        mb.settingsVars.settings.remember.subject["text"]   = mb.GetZOMailSubject(true)
+        mb.settingsVars.settings.remember.body["text"]      = mb.GetZOMailBody()
     end
 
-    function MailBuddy.SetRememberedMailData()
+    function mb.SetRememberedMailData()
         SetStandardRecipientAndSubject()
         SetRememberedRecipientSubjectAndBody()
     end
 
     --Initialization of this addon
-	local function Initialize(eventCode, addOnName)
-	        if (addOnName ~= MailBuddy.addonVars.name) then
-	            return
-	        end
+	local function Initialize(eventCode, addOnNameOfEachAddon)
+	        if addOnNameOfEachAddon ~= addonName then return end
 
             --Unregister the addon loaded event again so it won't be called twice!
-	        EVENT_MANAGER:UnregisterForEvent(MailBuddy.addonVars.name, eventCode)
+	        EM:UnregisterForEvent(addonName, eventCode)
+	        EM:RegisterForEvent(addonName, EVENT_PLAYER_ACTIVATED, PlayerActivatedCallback)
 
             --Load the saved variables etc.
-            MailBuddy.LoadUserSettings()
+            mb.LoadUserSettings()
 
             --Load localization file
-            MailBuddy.preventerVars.KeyBindingTexts = false
-            MailBuddy.Localization()
+            mb.preventerVars.KeyBindingTexts = false
+            mb.Localization()
 
 	        --Build the settings panel
-	        MailBuddy.CreateLAMPanel()
+	        mb.CreateLAMPanel()
 
             --Create the text for the keybinding
-	        ZO_CreateStringId("SI_BINDING_NAME_MAILBUDDY_COPY", MailBuddy.GetLocText("SI_BINDING_NAME_MAILBUDDY_COPY", true))
+	        ZO_CreateStringId("SI_BINDING_NAME_MAILBUDDY_COPY", mb.GetLocText("SI_BINDING_NAME_MAILBUDDY_COPY", true))
 
             --Select the current page at recipients and subjects (from the saved variables)
-	        MailBuddy.GetPage("recipients", 0, false)
-            MailBuddy.GetPage("subjects", 0, false)
+	        mb.GetPage("recipients", 0, false)
+            mb.GetPage("subjects", 0, false)
 
 		--New after patch 1.6
 			--======== FRIENDS LIST ================================================================
@@ -1671,7 +1774,7 @@
                     AddButtonToFriendsList()
 
 		        elseif newState == SCENE_HIDING then
-                    MailBuddy.settingsVars.settings.lastShown.recipients["FriendsList"] = not MailBuddy.recipientsBox:IsHidden()
+                    mb.settingsVars.settings.lastShown.recipients["FriendsList"] = not mb.recipientsBox:IsHidden()
                 end
 			end)
             --PreHook the MouseEnter and Exit functions for the friends list rows + names in the rows
@@ -1693,9 +1796,8 @@
 			GUILD_ROSTER_SCENE:RegisterCallback("StateChange", function(oldState, newState)
 		        if 	   newState == SCENE_SHOWN then
                     AddButtonToGuildRoster()
-
                 elseif newState == SCENE_HIDING then
-                    MailBuddy.settingsVars.settings.lastShown.recipients["GuildRoster"] = not MailBuddy.recipientsBox:IsHidden()
+                    mb.settingsVars.settings.lastShown.recipients["GuildRoster"] = not mb.recipientsBox:IsHidden()
 	            end
 			end)
 
@@ -1706,7 +1808,6 @@
             end)
 			ZO_PreHook("ZO_KeyboardGuildRosterRowDisplayName_OnMouseExit", function(control)
             	--d("Mouse exit guild roster  name: " .. control:GetName())
---TODO: QuadroTony Fehlermeldung beim Scrollen des Guild Member Rosters -> http://www.esoui.com/forums/showthread.php?p=28034#post28034
    				KEYBIND_STRIP:RemoveKeybindButtonGroup(keystripDefCopyGuildMember)
             end)
 			ZO_PreHook("ZO_KeyboardGuildRosterRow_OnMouseExit", function(control)
@@ -1716,78 +1817,78 @@
 
 
 			--======== MAIL INBOX ================================================================
+            local function updateNumTotalMails(newState)
+                if (newState ~= nil and newState == SCENE_SHOWN) or (not newState and SM:IsShowing("mailInbox")) then
+                    --Update the total number of mails label
+                	mb.UpdateNumTotalMails()
+                end
+            end
 			--Register a callback function for the mail inbox scene
 			MAIL_INBOX_SCENE:RegisterCallback("StateChange", function(oldState, newState)
- 		        if 	   	   newState == SCENE_SHOWN then
-                    --Update the total number of mails label
-                	MailBuddy.UpdateNumTotalMails()
-                end
+ 		        updateNumTotalMails(newState)
             end)
-
             --PreHook the mail inbox update functions so the number of current mails at the label will be updated too
             ZO_PreHook(MAIL_INBOX, "OnMailNumUnreadChanged", function(...)
-                if SCENE_MANAGER:IsShowing("mailInbox") then
-					--Update the total number of mails label
-					MailBuddy.UpdateNumTotalMails()
-                end
+                updateNumTotalMails()
             end)
             ZO_PreHook(MAIL_INBOX, "OnMailRemoved", function(...)
-                if SCENE_MANAGER:IsShowing("mailInbox") then
-					--Update the total number of mails label
-					MailBuddy.UpdateNumTotalMails()
-                end
+                updateNumTotalMails()
             end)
 
 			--======== MAIL SEND ================================================================
 			--Register a callback function for the mail send scene
 			MAIL_SEND_SCENE:RegisterCallback("StateChange", function(oldState, newState)
- 		        if 	   	   newState == SCENE_SHOWING then
+ 		        local mailSendFromLabel = mb.mailSendFromLabel
+                if 	   	   newState == SCENE_SHOWING then
+                    local settings = mb.settingsVars.settings
+                    local autoHide = settings.automatism.hide
                 	--Hide the UI elements for the recipients and subjects lists if enabled in the settings
-                    if MailBuddy.settingsVars.settings.automatism.hide["RecipientsBox"] then
-                        MailBuddy.ShowBox("recipients", false, true, false, false)
+                    if autoHide["RecipientsBox"] then
+                        mb.ShowBox("recipients", false, true, false, false)
                     else
                         local doClose = false
-                        local doOpen = MailBuddy.settingsVars.settings.lastShown.recipients["MailSend"]
+                        local doOpen = settings.lastShown.recipients["MailSend"]
                         if doOpen == false then doClose = true end
-                        MailBuddy.ShowBox("recipients", false, doClose, doOpen, false)
+                        mb.ShowBox("recipients", false, doClose, doOpen, false)
                     end
-                    if MailBuddy.settingsVars.settings.automatism.hide["SubjectsBox"] then
-                        MailBuddy.ShowBox("subjects", false, true, false, false)
+                    if autoHide["SubjectsBox"] then
+                        mb.ShowBox("subjects", false, true, false, false)
                     else
                         local doClose = false
-                        local doOpen = MailBuddy.settingsVars.settings.lastShown.subjects["MailSend"]
+                        local doOpen = settings.lastShown.subjects["MailSend"]
                         if doOpen == false then doClose = true end
-                        MailBuddy.ShowBox("subjects", false, doClose, doOpen, false)
+                        mb.ShowBox("subjects", false, doClose, doOpen, false)
                     end
 
                     --Add the "from" label above the "to" label and show the current account name if activated in the settings
-                    if MailBuddy.settingsVars.settings.showAccountName or MailBuddy.settingsVars.settings.showCharacterName then
-                       	if MailBuddy.mailSendFromLabel == nil then
-                           	MailBuddy.mailSendFromLabel = WINDOW_MANAGER:CreateControl("MailBuddy_MailSendFromLabel", ZO_MailSend, CT_LABEL)
+                    if settings.showAccountName or settings.showCharacterName then
+                       	if mailSendFromLabel == nil then
+                           	mailSendFromLabel = WM:CreateControl("MailBuddy_MailSendFromLabel", ZO_MailSend, CT_LABEL)
+                            mb.mailSendFromLabel = mailSendFromLabel
 						end
-                        if MailBuddy.mailSendFromLabel ~= nil then
+                        if mailSendFromLabel ~= nil then
 							--Set the name to display at the label
                             local nameToShow = ""
-                            if MailBuddy.settingsVars.settings.showAccountName then
+                            if settings.showAccountName then
                             	nameToShow = GetDisplayName()
-                            elseif MailBuddy.settingsVars.settings.showCharacterName then
+                            elseif settings.showCharacterName then
 	                            local playerName = GetUnitName("player")
                                 nameToShow = playerName
                             end
                         	--Change the label values
-							MailBuddy.mailSendFromLabel:SetFont("ZoFontWinH3")
-							MailBuddy.mailSendFromLabel:SetColor(ZO_NORMAL_TEXT:UnpackRGBA())
-							MailBuddy.mailSendFromLabel:SetScale(1)
-							MailBuddy.mailSendFromLabel:SetDrawLayer(DT_HIGH)
-							MailBuddy.mailSendFromLabel:SetDrawTier(DT_HIGH)
-							MailBuddy.mailSendFromLabel:SetAnchor(TOPLEFT, ZO_MailSendToLabel, TOPLEFT, 0, -30)
-							MailBuddy.mailSendFromLabel:SetDimensions(326, 23)
-				        	MailBuddy.mailSendFromLabel:SetHidden(false)
-							MailBuddy.mailSendFromLabel:SetText(MailBuddy.localizationVars.mb_loc["options_mail_from"] .. "   " .. nameToShow)
+							mailSendFromLabel:SetFont("ZoFontWinH3")
+							mailSendFromLabel:SetColor(ZO_NORMAL_TEXT:UnpackRGBA())
+							mailSendFromLabel:SetScale(1)
+							mailSendFromLabel:SetDrawLayer(DT_HIGH)
+							mailSendFromLabel:SetDrawTier(DT_HIGH)
+							mailSendFromLabel:SetAnchor(TOPLEFT, ZO_MailSendToLabel, TOPLEFT, 0, -30)
+							mailSendFromLabel:SetDimensions(326, 23)
+				        	mailSendFromLabel:SetHidden(false)
+							mailSendFromLabel:SetText(mailbuddyLoc["options_mail_from"] .. "   " .. nameToShow)
 						end
-                   	elseif not MailBuddy.settingsVars.settings.showAccountName and not MailBuddy.settingsVars.settings.showCharacterName then
-						if MailBuddy.mailSendFromLabel ~= nil then
-                        	MailBuddy.mailSendFromLabel:SetHidden(true)
+                   	elseif not settings.showAccountName and not settings.showCharacterName then
+						if mailSendFromLabel ~= nil then
+                        	mailSendFromLabel:SetHidden(true)
 						end
                     end
 
@@ -1795,44 +1896,45 @@
 	 				--Preset the standard mail recipient and subject from the settings after mail was send/not sent (error)
                     --Delay the automatic text filling of the subject and body texts as "send mail" from guild roster will clear the texts
                     zo_callLater(function()
-                        MailBuddy.SetRememberedMailData()
+                        mb.SetRememberedMailData()
                     end, 150)
                 elseif     newState == SCENE_HIDING then
                     --Remember if the recipients list and subjects list are currently shown
-                    MailBuddy.settingsVars.settings.lastShown.recipients["MailSend"] = not MailBuddy.recipientsBox:IsHidden()
-                    MailBuddy.settingsVars.settings.lastShown.subjects["MailSend"] = not MailBuddy.subjectsBox:IsHidden()
+                    mb.settingsVars.settings.lastShown.recipients["MailSend"] = not mb.recipientsBox:IsHidden()
+                    mb.settingsVars.settings.lastShown.subjects["MailSend"] = not mb.subjectsBox:IsHidden()
                     --Remember the last used recipient and subject text
-                    MailBuddy.RememberMailData()
+                    mb.RememberMailData()
                     --Hide the account name/character name label
-					if MailBuddy.mailSendFromLabel ~= nil then
-                       	MailBuddy.mailSendFromLabel:SetHidden(true)
+					if mailSendFromLabel ~= nil then
+                       	mailSendFromLabel:SetHidden(true)
 					end
             	end
 			end)
 
             --PreHook the OnMouseDown Handler at the ZOs mail to edit field
             ZO_PreHookHandler(ZO_MailSendToField, "OnMouseDown", function(control, button)
-                if MailBuddy.settingsVars.settings.useAlternativeLayout then
-                    if button == 2 then
+                if mb.settingsVars.settings.useAlternativeLayout then
+                    if button == MOUSE_BUTTON_INDEX_RIGHT then
                         SOUNDS["EDIT_CLICK"] = SOUNDS["NONE"]
                     end
                 end
             end)
             --PreHook the OnMouseUp Handler at the ZOs mail to edit field
             ZO_PreHookHandler(ZO_MailSendToField, "OnMouseUp", function(control, button, upInside)
-                if MailBuddy.settingsVars.settings.useAlternativeLayout then
+                if mb.settingsVars.settings.useAlternativeLayout then
                     ZO_Tooltips_HideTextTooltip()
-                    if upInside and button == 2 then
-                        MailBuddy.ShowBox("recipients", true, false, false, true)
+                    if upInside and button == MOUSE_BUTTON_INDEX_RIGHT then
+                        mb.ShowBox("recipients", true, false, false, true)
                         SOUNDS["EDIT_CLICK"] = SOUNDS["EDIT_CLICK_MAILBUDDY_BACKUP"]
                     end
                 end
             end)
             --PreHook the OnMouseEnter Handler at the ZOs mail to edit field
             ZO_PreHookHandler(ZO_MailSendToField, "OnMouseEnter", function(control)
-                if MailBuddy.settingsVars.settings.showAlternativeLayoutTooltip and MailBuddy.settingsVars.settings.useAlternativeLayout then
+                local settings = mb.settingsVars.settings
+                if settings.showAlternativeLayoutTooltip and settings.useAlternativeLayout then
                     local recipientFieldTooltipText = ""
-                    if MailBuddy.recipientsBox:IsHidden() then
+                    if mb.recipientsBox:IsHidden() then
                         recipientFieldTooltipText = "|cF0F0F0Right click|r to |c22DD22show|r recipients list"
                     else
                         recipientFieldTooltipText = "|cF0F0F0Right click to |cDD2222hide|r recipients list"
@@ -1842,33 +1944,35 @@
             end)
             --PreHook the OnMouseExit Handler at the ZOs mail to edit field
             ZO_PreHookHandler(ZO_MailSendToField, "OnMouseExit", function(control)
-                if MailBuddy.settingsVars.settings.showAlternativeLayoutTooltip and MailBuddy.settingsVars.settings.useAlternativeLayout then
+                --local settings = mb.settingsVars.settings
+                --if settings.showAlternativeLayoutTooltip and settings.useAlternativeLayout then
                     ZO_Tooltips_HideTextTooltip()
-                end
+                --end
             end)
             --PreHook the OnMouseDown Handler at the ZOs mail subject edit field
             ZO_PreHookHandler(ZO_MailSendSubjectField, "OnMouseDown", function(control, button)
-                if MailBuddy.settingsVars.settings.useAlternativeLayout then
+                if mb.settingsVars.settings.useAlternativeLayout then
                     ZO_Tooltips_HideTextTooltip()
-                    if button == 2 then
+                    if button == MOUSE_BUTTON_INDEX_RIGHT then
                         SOUNDS["EDIT_CLICK"] = SOUNDS["NONE"]
                     end
                 end
             end)
             --PreHook the OnMouseUp Handler at the ZOs mail subject edit field
             ZO_PreHookHandler(ZO_MailSendSubjectField, "OnMouseUp", function(control, button, upInside)
-                if MailBuddy.settingsVars.settings.useAlternativeLayout then
-                    if upInside and button == 2 then
-                        MailBuddy.ShowBox("subjects", true, false, false, true)
+                if mb.settingsVars.settings.useAlternativeLayout then
+                    if upInside and button == MOUSE_BUTTON_INDEX_RIGHT then
+                        mb.ShowBox("subjects", true, false, false, true)
                         SOUNDS["EDIT_CLICK"] = SOUNDS["EDIT_CLICK_MAILBUDDY_BACKUP"]
                     end
                 end
             end)
             --PreHook the OnMouseEnter Handler at the ZOs mail subject edit field
             ZO_PreHookHandler(ZO_MailSendSubjectField, "OnMouseEnter", function(control)
-                if MailBuddy.settingsVars.settings.showAlternativeLayoutTooltip and MailBuddy.settingsVars.settings.useAlternativeLayout then
+                local settings = mb.settingsVars.settings
+                if settings.showAlternativeLayoutTooltip and settings.useAlternativeLayout then
                     local subjectFieldTooltipText = ""
-                    if MailBuddy.subjectsBox:IsHidden() then
+                    if mb.subjectsBox:IsHidden() then
                         subjectFieldTooltipText = "|cF0F0F0Right click|r to |c22DD22show|r subjects list"
                     else
                         subjectFieldTooltipText = "|cF0F0F0Right click|r to |cDD2222hide|r subjects list"
@@ -1878,46 +1982,46 @@
             end)
             --PreHook the OnMouseExit Handler at the ZOs mail subject edit field
             ZO_PreHookHandler(ZO_MailSendSubjectField, "OnMouseExit", function(control)
-                if MailBuddy.settingsVars.settings.showAlternativeLayoutTooltip and MailBuddy.settingsVars.settings.useAlternativeLayout then
+                --local settings = mb.settingsVars.settings
+                --if settings.showAlternativeLayoutTooltip and settings.useAlternativeLayout then
                     ZO_Tooltips_HideTextTooltip()
-                end
+                --end
             end)
 
             --PreHook the standard mail sent method to store the recipient, subject and text (if wished)
             ZO_PreHook(MAIL_SEND, "Send", function()
-                MailBuddy.RememberMailData()
+                mb.RememberMailData()
             end)
             --PostHook the standard mail clear fields method to store the recipient, subject and text (if wished)
             ZO_PreHook(MAIL_SEND, "ClearFields", function()
-                MailBuddy.RememberMailData()
+                mb.RememberMailData()
                 zo_callLater(function()
-                    MailBuddy.SetRememberedMailData()
+                    mb.SetRememberedMailData()
                 end, 150)
             end)
 
             --Set the current selected recipient and subject texts
-            MailBuddy_MailSendRecipientLabelActiveText:SetText(string.format(MailBuddy.settingsVars.settings.curRecipientAbbreviated))
-            MailBuddy.UpdateEditFieldToolTip(MailBuddy_MailSendRecipientLabelActiveText, MailBuddy.settingsVars.settings.curRecipient, MailBuddy.settingsVars.settings.curRecipientAbbreviated)
-	        MailBuddy_MailSendSubjectLabelActiveText:SetText(string.format(MailBuddy.settingsVars.settings.curSubjectAbbreviated))
-            MailBuddy.UpdateEditFieldToolTip(MailBuddy_MailSendSubjectLabelActiveText, MailBuddy.settingsVars.settings.curSubject, MailBuddy.settingsVars.settings.curSubjectAbbreviated)
+            local settings = mb.settingsVars.settings
+            local curRecipientAbbreviated = settings.curRecipientAbbreviated
+            local curSubjectAbbreviated = settings.curSubjectAbbreviated
+            MailBuddy_MailSendRecipientLabelActiveText:SetText(curRecipientAbbreviated)
+            mb.UpdateEditFieldToolTip(MailBuddy_MailSendRecipientLabelActiveText, settings.curRecipient, curRecipientAbbreviated)
+	        MailBuddy_MailSendSubjectLabelActiveText:SetText(curSubjectAbbreviated)
+            mb.UpdateEditFieldToolTip(MailBuddy_MailSendSubjectLabelActiveText, settings.curSubject, curSubjectAbbreviated)
 
 			--Preset the standard mail recipient and subject from the settings after mail was send/not sent (error)
-	        EVENT_MANAGER:RegisterForEvent(MailBuddy.addonVars.name, EVENT_MAIL_SEND_SUCCESS, function()
+	        EM:RegisterForEvent(addonName, EVENT_MAIL_SEND_SUCCESS, function()
             	zo_callLater(function()
-                    MailBuddy.SetRememberedMailData()
+                    mb.SetRememberedMailData()
                 end, 150)
             end)
-	        EVENT_MANAGER:RegisterForEvent(MailBuddy.addonVars.name, EVENT_MAIL_SEND_FAILED, function()
+	        EM:RegisterForEvent(addonName, EVENT_MAIL_SEND_FAILED, function()
             	zo_callLater(function()
-                    MailBuddy.SetRememberedMailData()
+                    mb.SetRememberedMailData()
                 end, 150)
             end)
-
-	   	-- Registers addon to loadedAddon library
-		LIBLA:RegisterAddon(MailBuddy.addonVars.name, MailBuddy.addonVars.addonVersionOptionsNumber)
 
 	end
 
     --Event Registry--
-	EVENT_MANAGER:RegisterForEvent(MailBuddy.addonVars.name, EVENT_PLAYER_ACTIVATED, PlayerActivatedCallback)
-	EVENT_MANAGER:RegisterForEvent(MailBuddy.addonVars.name, EVENT_ADD_ON_LOADED, Initialize)
+	EM:RegisterForEvent(addonName, EVENT_ADD_ON_LOADED, Initialize)
