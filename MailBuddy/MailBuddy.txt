@@ -1,11 +1,11 @@
 ## Title: |cEFEBBEMailBuddy|r
-## Author: |cFFFF00Baertram|r and |cFF0000Minceraft|r
-## Version: 3.4
-## AddOnVersion: 304
-## APIVersion: 101032 101033
+## Author: Baertram and Minceraft
+## Version: 3.6
+## AddOnVersion: 306
+## APIVersion: 101037 101038
 ## Description: A simple addon to help you create |cFF0000Return To Sender|r mails and quickly get needed inventory space! Now with an |cFF0000address book|r feature
 ## SavedVariables: MailBuddy_SavedVars
-## DependsOn: LibAddonMenu-2.0>=32 LibMediaProvider-1.0>=18
+## DependsOn: LibAddonMenu-2.0>=34 LibMediaProvider-1.0>=18
 
 ## Main files
 MailBuddy.lua

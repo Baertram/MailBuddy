@@ -11,7 +11,7 @@
                 MailBuddy.ShowBox("recipients", true, false, false, true)
             </OnMouseUp>
             <Controls>
-            <Label name="$(parent)ActiveText" layer="1" level="3" font="$(STONE_TABLET_FONT)|18|shadow" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="@Name">
+            <Label name="$(parent)ActiveText" layer="1" level="3" font="$(STONE_TABLET_FONT)|18|shadow" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="@Name">
                <Anchor point="LEFT" relativeTo="MailBuddy_MailSendRecipientLabel" relativePoint="Left" offsetX= "6" offsetY ="0"/>
             </Label>
             </Controls>
@@ -28,7 +28,7 @@
                 MailBuddy.ShowBox("subjects", true, false, false, true)
             </OnMouseUp>
             <Controls>
-            <Label name="$(parent)ActiveText" layer="1" level="3" font="$(STONE_TABLET_FONT)|18|shadow" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="RTS">
+            <Label name="$(parent)ActiveText" layer="1" level="3" font="$(STONE_TABLET_FONT)|18|shadow" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="RTS">
                <Anchor point="LEFT" relativeTo="MailBuddy_MailSendSubjectLabel" relativePoint="Left" offsetX= "6" offsetY ="0"/>
             </Label>
             </Controls>
@@ -105,7 +105,7 @@
                     <Anchor point="TOP" relativeTo="MailBuddy_MailSendSubjectsBox" relativePoint="TOP" offsetX="0" offsetY="40"/>
                 </Texture>
 
-                <Label name="$(parent)CustomSubjectLabel" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="RTS">
+                <Label name="$(parent)CustomSubjectLabel" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="RTS">
                 <Anchor point="TOPLEFT" relativeTo="MailBuddy_MailSendSubjectsBox" relativePoint="TOPLEFT" offsetX= "10" offsetY ="40"/>
                   <OnMouseDown>
                       SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -115,7 +115,7 @@
                   </OnMouseUp>
                 </Label>
 
-                <Label name="$(parent)RETURNLabel" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="RETURN">
+                <Label name="$(parent)RETURNLabel" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="RETURN">
                 <Anchor point="TOPLEFT" relativeTo="MailBuddy_MailSendSubjectsBox" relativePoint="TOPLEFT" offsetX= "10" offsetY ="70"/>
                   <OnMouseDown>
                     SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -125,7 +125,7 @@
                   </OnMouseUp>
                 </Label>
 
-                <Label name="$(parent)BOUNCELabel" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="BOUNCE">
+                <Label name="$(parent)BOUNCELabel" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="BOUNCE">
                 <Anchor point="TOPLEFT" relativeTo="MailBuddy_MailSendSubjectsBox" relativePoint="TOPLEFT" offsetX= "10" offsetY ="100"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -148,7 +148,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomSubjectLabel1" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomSubjectLabel1" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_SubjectsPage1CustomSubjectDeleteBullet1" relativePoint="RIGHT" offsetX= "5" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -166,7 +166,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomSubjectLabel2" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomSubjectLabel2" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_SubjectsPage1CustomSubjectDeleteBullet2" relativePoint="RIGHT" offsetX= "5" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -186,7 +186,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomSubjectLabel3" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomSubjectLabel3" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_SubjectsPage1CustomSubjectDeleteBullet3" relativePoint="RIGHT" offsetX= "5" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -206,7 +206,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomSubjectLabel4" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomSubjectLabel4" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_SubjectsPage1CustomSubjectDeleteBullet4" relativePoint="RIGHT" offsetX= "5" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -226,7 +226,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomSubjectLabel5" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomSubjectLabel5" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_SubjectsPage1CustomSubjectDeleteBullet5" relativePoint="RIGHT" offsetX= "5" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -252,7 +252,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomSubjectLabel6" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomSubjectLabel6" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_SubjectsPage2CustomSubjectDeleteBullet6" relativePoint="RIGHT" offsetX= "5" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -270,7 +270,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomSubjectLabel7" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomSubjectLabel7" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_SubjectsPage2CustomSubjectDeleteBullet7" relativePoint="RIGHT" offsetX= "5" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -290,7 +290,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomSubjectLabel8" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomSubjectLabel8" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_SubjectsPage2CustomSubjectDeleteBullet8" relativePoint="RIGHT" offsetX= "5" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -310,7 +310,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomSubjectLabel9" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomSubjectLabel9" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_SubjectsPage2CustomSubjectDeleteBullet9" relativePoint="RIGHT" offsetX= "5" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -330,7 +330,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomSubjectLabel10" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomSubjectLabel10" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_SubjectsPage2CustomSubjectDeleteBullet10" relativePoint="RIGHT" offsetX= "5" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -356,7 +356,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomSubjectLabel11" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomSubjectLabel11" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_SubjectsPage3CustomSubjectDeleteBullet11" relativePoint="RIGHT" offsetX= "5" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -374,7 +374,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomSubjectLabel12" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomSubjectLabel12" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_SubjectsPage3CustomSubjectDeleteBullet12" relativePoint="RIGHT" offsetX= "5" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -394,7 +394,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomSubjectLabel13" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomSubjectLabel13" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_SubjectsPage3CustomSubjectDeleteBullet13" relativePoint="RIGHT" offsetX= "5" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -414,7 +414,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomSubjectLabel14" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomSubjectLabel14" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_SubjectsPage3CustomSubjectDeleteBullet14" relativePoint="RIGHT" offsetX= "5" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -434,7 +434,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomSubjectLabel15" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomSubjectLabel15" layer="1" level="3" mouseEnabled="true" font="$(STONE_TABLET_FONT)|20|shadow" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_SubjectsPage3CustomSubjectDeleteBullet15" relativePoint="RIGHT" offsetX= "5" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -509,7 +509,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomRecipientLabel1" layer="1" level="3" mouseEnabled="true" font="ZoFontGame" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomRecipientLabel1" layer="1" level="3" mouseEnabled="true" font="ZoFontGame" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_RecipientsPage1DeleteBullet1" relativePoint="RIGHT" offsetX= "10" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -528,7 +528,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomRecipientLabel2" layer="1" level="3" font="ZoFontGame" mouseEnabled="true" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomRecipientLabel2" layer="1" level="3" font="ZoFontGame" mouseEnabled="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_RecipientsPage1DeleteBullet2" relativePoint="RIGHT" offsetX= "10" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -546,7 +546,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomRecipientLabel3" layer="1" level="3" font="ZoFontGame" mouseEnabled="true" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomRecipientLabel3" layer="1" level="3" font="ZoFontGame" mouseEnabled="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_RecipientsPage1DeleteBullet3" relativePoint="RIGHT" offsetX= "10" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -564,7 +564,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomRecipientLabel4" layer="1" level="3" font="ZoFontGame" mouseEnabled="true" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomRecipientLabel4" layer="1" level="3" font="ZoFontGame" mouseEnabled="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_RecipientsPage1DeleteBullet4" relativePoint="RIGHT" offsetX= "10" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -582,7 +582,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomRecipientLabel5" layer="1" level="3" mouseEnabled="true" font="ZoFontGame" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomRecipientLabel5" layer="1" level="3" mouseEnabled="true" font="ZoFontGame" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_RecipientsPage1DeleteBullet5" relativePoint="RIGHT" offsetX= "10" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -600,7 +600,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomRecipientLabel6" layer="1" level="3" mouseEnabled="true" font="ZoFontGame" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomRecipientLabel6" layer="1" level="3" mouseEnabled="true" font="ZoFontGame" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_RecipientsPage1DeleteBullet6" relativePoint="RIGHT" offsetX= "10" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -618,7 +618,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomRecipientLabel7" layer="1" level="3" mouseEnabled="true" font="ZoFontGame" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomRecipientLabel7" layer="1" level="3" mouseEnabled="true" font="ZoFontGame" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_RecipientsPage1DeleteBullet7" relativePoint="RIGHT" offsetX= "10" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -643,7 +643,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomRecipientLabel8" layer="1" level="3" mouseEnabled="true" font="ZoFontGame" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomRecipientLabel8" layer="1" level="3" mouseEnabled="true" font="ZoFontGame" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_RecipientsPage2DeleteBullet8" relativePoint="RIGHT" offsetX= "10" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -661,7 +661,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomRecipientLabel9" layer="1" level="3" font="ZoFontGame" mouseEnabled="true" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomRecipientLabel9" layer="1" level="3" font="ZoFontGame" mouseEnabled="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_RecipientsPage2DeleteBullet9" relativePoint="RIGHT" offsetX= "10" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -679,7 +679,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomRecipientLabel10" layer="1" level="3" font="ZoFontGame" mouseEnabled="true" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomRecipientLabel10" layer="1" level="3" font="ZoFontGame" mouseEnabled="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_RecipientsPage2DeleteBullet10" relativePoint="RIGHT" offsetX= "10" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -697,7 +697,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomRecipientLabel11" layer="1" level="3" font="ZoFontGame" mouseEnabled="true" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomRecipientLabel11" layer="1" level="3" font="ZoFontGame" mouseEnabled="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_RecipientsPage2DeleteBullet11" relativePoint="RIGHT" offsetX= "10" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -715,7 +715,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomRecipientLabel12" layer="1" level="3" mouseEnabled="true" font="ZoFontGame" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomRecipientLabel12" layer="1" level="3" mouseEnabled="true" font="ZoFontGame" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_RecipientsPage2DeleteBullet12" relativePoint="RIGHT" offsetX= "10" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -733,7 +733,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomRecipientLabel13" layer="1" level="3" mouseEnabled="true" font="ZoFontGame" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomRecipientLabel13" layer="1" level="3" mouseEnabled="true" font="ZoFontGame" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_RecipientsPage2DeleteBullet13" relativePoint="RIGHT" offsetX= "10" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -751,7 +751,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomRecipientLabel14" layer="1" level="3" mouseEnabled="true" font="ZoFontGame" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomRecipientLabel14" layer="1" level="3" mouseEnabled="true" font="ZoFontGame" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_RecipientsPage2DeleteBullet14" relativePoint="RIGHT" offsetX= "10" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -776,7 +776,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomRecipientLabel15" layer="1" level="3" mouseEnabled="true" font="ZoFontGame" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomRecipientLabel15" layer="1" level="3" mouseEnabled="true" font="ZoFontGame" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_RecipientsPage3DeleteBullet15" relativePoint="RIGHT" offsetX= "10" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -794,7 +794,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomRecipientLabel16" layer="1" level="3" mouseEnabled="true" font="ZoFontGame" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomRecipientLabel16" layer="1" level="3" mouseEnabled="true" font="ZoFontGame" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_RecipientsPage3DeleteBullet16" relativePoint="RIGHT" offsetX= "10" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -812,7 +812,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomRecipientLabel17" layer="1" level="3" mouseEnabled="true" font="ZoFontGame" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomRecipientLabel17" layer="1" level="3" mouseEnabled="true" font="ZoFontGame" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_RecipientsPage3DeleteBullet17" relativePoint="RIGHT" offsetX= "10" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -830,7 +830,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomRecipientLabel18" layer="1" level="3" mouseEnabled="true" font="ZoFontGame" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomRecipientLabel18" layer="1" level="3" mouseEnabled="true" font="ZoFontGame" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_RecipientsPage3DeleteBullet18" relativePoint="RIGHT" offsetX= "10" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -848,7 +848,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomRecipientLabel19" layer="1" level="3" mouseEnabled="true" font="ZoFontGame" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomRecipientLabel19" layer="1" level="3" mouseEnabled="true" font="ZoFontGame" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_RecipientsPage3DeleteBullet19" relativePoint="RIGHT" offsetX= "10" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -866,7 +866,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomRecipientLabel20" layer="1" level="3" mouseEnabled="true" font="ZoFontGame" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomRecipientLabel20" layer="1" level="3" mouseEnabled="true" font="ZoFontGame" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_RecipientsPage3DeleteBullet20" relativePoint="RIGHT" offsetX= "10" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]
@@ -884,7 +884,7 @@
                     </OnMouseUp>
                 </Texture>
 
-                <Label name="$(parent)CustomRecipientLabel21" layer="1" level="3" mouseEnabled="true" font="ZoFontGame" resizeToFitDescendents="true" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
+                <Label name="$(parent)CustomRecipientLabel21" layer="1" level="3" mouseEnabled="true" font="ZoFontGame" fontSize="1" color="CFDCBD" horizontalAlignment="LEFT" verticalAlignment="TOP" wrapMode="ELLIPSIS" text="">
                   <Anchor point="LEFT" relativeTo="MailBuddy_RecipientsPage3DeleteBullet21" relativePoint="RIGHT" offsetX= "10" offsetY ="0"/>
                     <OnMouseDown>
                         SOUNDS["EDIT_CLICK"]=SOUNDS["NONE"]

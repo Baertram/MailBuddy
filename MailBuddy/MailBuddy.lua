@@ -6,8 +6,8 @@
     mb.addonVars = {}
     mb.addonVars.name = "MailBuddy"
     mb.addonVars.displayName = "|cFFFF00MailBuddy|r"
-    mb.addonVars.author = "|cFF0000Minceraft|r and |cFFFF00Baertram|r"
-	mb.addonVars.addonVersionOptionsNumber = 3.3
+    mb.addonVars.author = "Minceraft, current: Baertram"
+	mb.addonVars.addonVersionOptionsNumber = 3.6
     mb.addonVars.version = tostring(mb.addonVars.addonVersionOptionsNumber)
 
     mb.addonVars.savedVariablesName = "MailBuddy_SavedVars"
